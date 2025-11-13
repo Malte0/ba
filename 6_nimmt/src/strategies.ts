@@ -42,10 +42,51 @@ export const HIGHEST_CARD: Strategy = {
   },
 };
 
-export const KEEP_MIDDLE_CARDS: Strategy = {
-  name: "Keep middle cards",
-  description: "Plays high and low cards first",
+const mostDistantCardFrom = (middleCardValue: number) => {
+  return (handCards: Card[]) => {
+    const MIDDLE = middleCardValue;
+    let highestDistance = 0;
+    let indexOfHighestDistance = 0;
+    for (let i = 0; i < handCards.length; i++) {
+      const card = handCards[i];
+      const distance = Math.abs(card.value - MIDDLE);
+      if (distance > highestDistance) {
+        highestDistance = distance;
+        indexOfHighestDistance = i;
+      }
+    }
+    return indexOfHighestDistance;
+  };
+};
+
+// Finds cards that are most distant from a center point
+export const KEEP_MIDDLE = (middleValue: number) => {
+  const distFunction = mostDistantCardFrom(middleValue);
+  return {
+    name: "Keep middle cards",
+    description: "Plays high and low cards first",
+    cardToPlay: (handCards: Card[]) => {
+      return distFunction(handCards);
+    },
+  };
+};
+
+export const MIDDLE_AND_SAFE: Strategy = {
+  name: "Middle and safe",
+  description:
+    "Plays high and low cards first, unless he has a card, that has a value at most n-1 higher than a card in a non full row",
   cardToPlay: (handCards: Card[]) => {
-    return 0;
+    const MIDDLE = 55;
+    let highestDistance = 0;
+    let indexOfHighestDistance = 0;
+    for (let i = 0; i < handCards.length; i++) {
+      const card = handCards[i];
+      const distance = Math.abs(card.value - MIDDLE);
+      if (distance > highestDistance) {
+        highestDistance = distance;
+        indexOfHighestDistance = i;
+      }
+    }
+    return indexOfHighestDistance;
   },
 };
