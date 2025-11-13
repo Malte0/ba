@@ -1,6 +1,5 @@
 import { Deck } from "./deck";
-import { Strategy } from "./strategy";
-import { Card } from "./types";
+import { Card, Strategy } from "./types";
 
 const NUMBER_OF_CARDS_IN_HAND = 10;
 

@@ -1,6 +1,6 @@
 import { Game } from "./game";
 import { Player } from "./player";
-import * as strategies from "./strategy";
+import * as strategies from "./strategies";
 
 const results: { [key: string]: number } = {};
 const NUMBER_OF_GAMES = 10000;
@@ -27,14 +27,14 @@ function playGame(players: Player[]) {
 function main() {
   const players: Player[] = [
     new Player("Emilia", strategies.RANDOM),
-    new Player("Leo", strategies.RANDOM),
+    new Player("Leo", strategies.HIGHEST_CARD),
     new Player("Clara", strategies.RANDOM),
     new Player("Donavan", strategies.LOWEST_CARD),
   ];
   for (let i = 0; i < NUMBER_OF_GAMES; i++) {
     playGame(players);
   }
-  const lowestScore = Math.min(...Object.keys(results).map(key => results[key]));
+  const lowestScore = Math.min(...Object.keys(results).map((key) => results[key]));
   for (const result in results) {
     results[result] = Math.round((results[result] / lowestScore) * 100) / 100;
   }
