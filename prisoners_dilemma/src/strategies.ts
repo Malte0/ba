@@ -46,7 +46,7 @@ export const TIT_FOR_TAT_FORGIVING: Strategy = {
     "Same as Tit for Tat, but sometimes still cooperates when opponent defects",
   costMatrix: DEFAULT_COST_MATRIX,
   cooperates: (opponentHistory: boolean[]) => {
-    const PROB_TO_FORGIVE = 0.1;
+    const PROB_TO_FORGIVE = 0.2;
     let result = true
     if (opponentHistory.length > 0) {
       result = Math.random() < PROB_TO_FORGIVE ? true : opponentHistory[0];

@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "typescript": "^5.9.3"
+  },
+  "scripts": {
+    "compile": "npx tsc -w",
+    "start": "node --watch dist/main.js"
+  }
+}
