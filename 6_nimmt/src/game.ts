@@ -3,27 +3,13 @@ import { Deck } from "./deck";
 import { Player } from "./player";
 import { Card } from "./types";
 
-const some_random_names = [
-  "Emilia",
-  "Leo",
-  "Clara",
-  "Noah",
-  "Mia",
-  "Donavan",
-  "Sophia",
-  "Barbara",
-  "Olivia",
-  "Pascal",
-];
-
 export class Game {
   private players: Player[];
   private board: Board;
   private deck: Deck;
-  private numberOfPlayers: number;
 
-  constructor(numberOfPlayers: number) {
-    this.numberOfPlayers = numberOfPlayers;
+  constructor(players: Player[]) {
+    this.players = players;
     this.resetGame();
   }
 
@@ -43,13 +29,19 @@ export class Game {
     });
   }
 
+  public getScores(): {[key: string]: number} {
+    const scores: {[key: string]: number} = {}
+    this.players.forEach(player => {
+      scores[player.name] = player.points;
+    });
+    return scores
+  }
+
   public resetGame(): void {
-    this.deck = new Deck();
+    this.deck = new Deck()
     this.board = new Board(this.deck);
-    this.players = [];
-    for (let i = 0; i < this.numberOfPlayers; i++) {
-      const playerName = some_random_names[i % some_random_names.length];
-      this.players.push(new Player(playerName, null, this.deck));
+    for(const player of this.players) {
+      player.drawCards(this.deck);
     }
   }
 
@@ -86,7 +78,7 @@ export class Game {
   }
 
   public playRound(): void {
-    const playedCards = this.players.map((player) => ({
+    const playedCards = this.players.map((player: Player) => ({
       player,
       card: player.playCard(),
     }));

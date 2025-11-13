@@ -33,7 +33,7 @@ export class Deck {
         if (this.cards.length === 0) {
             throw new Error("No cards left in the deck");
         }
-        return this.cards.pop() as Card;
+        return this.cards.pop();
     }
 
     public remainingCards(): number {

@@ -15,7 +15,7 @@ export const RANDOM: Strategy = {
 
 export const LOWEST_CARD: Strategy = {
     name: "Play lowest Card",
-    cardToPlay(handCards) {
+    cardToPlay: (handCards: Card[]) => {
         let lowesValue = Infinity
         let lowestIndex: number = 0;
         for (let i = 0; i < handCards.length; i++) {
