@@ -13,6 +13,12 @@ build/
 develop-eggs/
 dist/
 downloads/
+.vscode/
+*.code-workspace
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
 eggs/
 .eggs/
 lib/
