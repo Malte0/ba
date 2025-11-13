@@ -1,4 +1,5 @@
 import { Game } from "./game";
+import { Strategy } from "./strategy";
 
 const NUMBER_OF_PLAYERS = 4;
 

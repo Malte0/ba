@@ -28,7 +28,7 @@ export class Game {
   }
 
   public playersHaveCardsInHand(): boolean {
-    return this.players.some((player) => player.hand.length > 0);
+    return this.players.some((player) => player.hasCards());
   }
 
   public printBoardState(): void {
@@ -49,7 +49,7 @@ export class Game {
     this.players = [];
     for (let i = 0; i < this.numberOfPlayers; i++) {
       const playerName = some_random_names[i % some_random_names.length];
-      this.players.push(new Player(playerName, this.deck));
+      this.players.push(new Player(playerName, null, this.deck));
     }
   }
 
