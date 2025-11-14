@@ -7,5 +7,5 @@ export type Card = {
 export type Strategy = {
     name: string,
     description: string,
-    cardToPlay: (handCards: Card[]) => number
+    cardToPlay: (handCards: Card[], cardsOnBoard: Card[][], cardsPlayed: Card[]) => number
 }

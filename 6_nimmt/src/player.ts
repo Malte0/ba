@@ -36,8 +36,8 @@ export class Player {
   }
 
   // momentarily plays random card from hand
-  public playCard(): Card {
-    const cardIndexToPlay: number = this.strategy.cardToPlay([...this.hand]);
+  public playCard(cardsOnBoard: Card[][], cardsPlayed: Card[]): Card {
+    const cardIndexToPlay: number = this.strategy.cardToPlay([...this.hand], cardsOnBoard, cardsPlayed);
     const cardToPlay = this.hand.splice(cardIndexToPlay, 1)[0];
     return cardToPlay;
   }

@@ -42,9 +42,8 @@ export const HIGHEST_CARD: Strategy = {
   },
 };
 
-const mostDistantCardFrom = (middleCardValue: number) => {
-  return (handCards: Card[]) => {
-    const MIDDLE = middleCardValue;
+const mostDistantFrom60 = (handCards: Card[]) => {
+    const MIDDLE = 60;
     let highestDistance = 0;
     let indexOfHighestDistance = 0;
     for (let i = 0; i < handCards.length; i++) {
@@ -56,37 +55,36 @@ const mostDistantCardFrom = (middleCardValue: number) => {
       }
     }
     return indexOfHighestDistance;
-  };
 };
 
 // Finds cards that are most distant from a center point
-export const KEEP_MIDDLE = (middleValue: number) => {
-  const distFunction = mostDistantCardFrom(middleValue);
-  return {
+export const KEEP_MIDDLE: Strategy = {
     name: "Keep middle cards",
     description: "Plays high and low cards first",
     cardToPlay: (handCards: Card[]) => {
-      return distFunction(handCards);
+      return mostDistantFrom60(handCards);
     },
-  };
 };
 
 export const MIDDLE_AND_SAFE: Strategy = {
   name: "Middle and safe",
   description:
     "Plays high and low cards first, unless he has a card, that has a value at most n-1 higher than a card in a non full row",
+  cardToPlay: (handCards: Card[], cardsOnBoard: Card[][], cardsPlayed: Card[]) => {
+    const mostDistant = mostDistantFrom60(handCards);
+    // Cards that are at the top of each row
+    const frontCards = cardsOnBoard.map(row => row[row.length-1]);
+    // also get how many cards are left to be played in each of the rows
+    return mostDistant;
+  },
+};
+
+export const SAFE_WITH_MEMORY: Strategy = {
+  name: "Safe with Memory",
+  description:
+    "Plays high and low cards first, unless he has a card, that has a value at most n+k-1 higher than a card in a non full row, n is number of players, k is how many cards in the range have been played allready",
   cardToPlay: (handCards: Card[]) => {
-    const MIDDLE = 55;
-    let highestDistance = 0;
-    let indexOfHighestDistance = 0;
-    for (let i = 0; i < handCards.length; i++) {
-      const card = handCards[i];
-      const distance = Math.abs(card.value - MIDDLE);
-      if (distance > highestDistance) {
-        highestDistance = distance;
-        indexOfHighestDistance = i;
-      }
-    }
-    return indexOfHighestDistance;
+    const mostDistant = mostDistantFrom60(handCards);
+    return mostDistant;
   },
 };

@@ -45,46 +45,14 @@ export class Game {
     }
   }
 
-  private putCardOnBoard(card: Card, player: Player): void {
-    let lowestDiff = Infinity;
-    let targetRowIndex = -1;
-    for (let row of this.board.rows) {
-        const lastCardInRow = row[row.length - 1];
-        const diff = card.value - lastCardInRow.value;
-        if (diff > 0 && diff < lowestDiff) {
-            lowestDiff = diff;
-            targetRowIndex = this.board.rows.indexOf(row);
-        }
-    }
-    // In case the card value is lower than any last card on the board
-    if (targetRowIndex === -1) {
-        // Player must pick a row
-        const chosenRowIndex = player.pickRow(this.board.rows);
-        const chosenRow = this.board.rows[chosenRowIndex];
-        const pointsToAdd = chosenRow.reduce((sum, card) => sum + card.points, 0);
-        player.addPoints(pointsToAdd);
-        this.board.rows[chosenRowIndex] = [card];
-        return;
-    }
-    const targetRow = this.board.rows[targetRowIndex];
-    if (targetRow.length < 5) {
-        targetRow.push(card);
-    } else {
-        // Row is full, player must take this row
-        const pointsToAdd = targetRow.reduce((sum, card) => sum + card.points, 0);
-        player.addPoints(pointsToAdd);
-        this.board.rows[targetRowIndex] = [card];
-    }
-  }
-
   public playRound(): void {
     const playedCards = this.players.map((player: Player) => ({
       player,
-      card: player.playCard(),
+      card: player.playCard(this.board.rows, this.board.cardsPlayed),
     }));
     playedCards.sort((a, b) => a.card.value - b.card.value);
     for (const { player, card } of playedCards) {
-      this.putCardOnBoard(card, player);
+      this.board.putCardOnBoard(card, player);
     }
   }
 }
