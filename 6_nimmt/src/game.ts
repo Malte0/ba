@@ -38,7 +38,7 @@ export class Game {
   }
 
   public resetGame(): void {
-    this.deck = new Deck();
+    this.deck = new Deck(this.players.length);
     this.board = new Board(this.deck);
     for (const player of this.players) {
       player.drawCards(this.deck);

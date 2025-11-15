@@ -178,3 +178,11 @@ export const REAL_PLAYER: Strategy = {
     return indexToPlay;
   },
 };
+
+// Additional ideas:
+// using a card to take a low amount of points on purpose
+// vorhersehen, welchen stapel man beim Spielen einer zb. sehr hohen karte nehmen muesste und dann ne andere spielen
+// Only other good sources for strategies
+// https://math.rptu.de/komms/archiv/berichte-modellierungswochen/03/2019-spiele-spielstrategien
+// https://pub.tik.ee.ethz.ch/students/2021-HS/GA-2021-02.pdf
+// https://boardgamegeek.com/thread/436792/6-nimmt-strategy-tips

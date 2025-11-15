@@ -1,7 +1,6 @@
+import config from "./config";
 import { Deck } from "./deck";
 import { Card, Strategy } from "./types";
-
-const NUMBER_OF_CARDS_IN_HAND = 10;
 
 export class Player {
   public name: string;
@@ -17,7 +16,7 @@ export class Player {
 
   public drawCards(deck: Deck): void {
     this.hand = [];
-    for (let i = 0; i < NUMBER_OF_CARDS_IN_HAND; i++) {
+    for (let i = 0; i < config.Number_of_Starting_Cards; i++) {
       this.hand.push(deck.drawCard());
     }
   }

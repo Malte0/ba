@@ -1,9 +1,9 @@
 import { Card } from "./types";
+import config from "./config";
 
-const TOTAL_CARDS = 104;
-const CARDS: Card[] = (() => {
+const CARDS: (totalCards: number) => Card[] = (totalCards: number) => {
     const cards: Card[] = [];
-    for (let i = 1; i <= TOTAL_CARDS; i++) {
+    for (let i = 1; i <= totalCards; i++) {
         let points = 1;
         if (i % 5 === 0) points += 1;
         if (i % 10 === 0) points += 1;
@@ -12,13 +12,13 @@ const CARDS: Card[] = (() => {
         cards.push({ value: i, points });
     }
     return cards;
-})();
+};
 
 export class Deck {
     private cards: Card[];
 
-    constructor() {
-        this.cards = [...CARDS];
+    constructor(numberOfPlayers: number) {
+        this.cards = [...CARDS(config.Profi_Variante ? numberOfPlayers * 10 + 4 : config.Total_Cards_Default)];
         this.shuffle();
     }
 

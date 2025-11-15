@@ -1,8 +1,7 @@
 import { Deck } from "./deck";
 import { Player } from "./player";
 import { Card } from "./types";
-
-const NUMBER_OF_ROWS = 4;
+import config from "./config"
 
 export class Board {
   public rows: Card[][];
@@ -11,8 +10,8 @@ export class Board {
 
   constructor(deck: Deck) {
     this.cardsLeft = new Array(105).fill(1);
-    this.rows = Array.from({ length: NUMBER_OF_ROWS }, () => [] as Card[]);
-    for (let i = 0; i < NUMBER_OF_ROWS; i++) {
+    this.rows = Array.from({ length: config.Number_Of_Rows }, () => [] as Card[]);
+    for (let i = 0; i < config.Number_Of_Rows; i++) {
       const drawnCard = deck.drawCard()
       this.rows[i].push(drawnCard);
       this.cardsLeft[drawnCard.value] = 0;
