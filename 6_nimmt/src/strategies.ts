@@ -145,8 +145,16 @@ export const SAFE_WITH_MEMORY: Strategy = {
   cardToPlay: (handCards: Card[], cardsOnBoard: Card[][], cardsLeft: number[], numberOfPlayers: number) => {
     const mostDistant = mostDistantFrom60(handCards);
 
+    const totalCardsOnBoard = cardsOnBoard.map(row => row.length).reduce((prev, curr) => (prev + curr), 0);
+    if (totalCardsOnBoard < 9) return mostDistant;
+
     for (const handCard of handCards) {
       if (isSafeToPlayMemory(handCard, cardsOnBoard, cardsLeft)) {
+        // console.log(cardsOnBoard);
+        // console.log(handCards);
+        // console.log(handCard);
+        // console.log(handCards.indexOf(handCard));
+        // throw new Error();
         return handCards.indexOf(handCard);
       }
     }
