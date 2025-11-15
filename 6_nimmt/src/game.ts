@@ -18,29 +18,29 @@ export class Game {
   }
 
   public printBoardState(): void {
-    const valuesFormatted = this.board.rows.map(row => row.map(card => card.value));
+    const valuesFormatted = this.board.rows.map((row) => row.map((card) => card.value));
     console.table(valuesFormatted);
   }
 
   public printScore(): void {
     console.log("Current Scores:");
-    this.players.forEach(player => {
+    this.players.forEach((player) => {
       console.log(`${player.name}: ${player.points} points`);
     });
   }
 
-  public getScores(): {[key: string]: number} {
-    const scores: {[key: string]: number} = {}
-    this.players.forEach(player => {
+  public getScores(): { [key: string]: number } {
+    const scores: { [key: string]: number } = {};
+    this.players.forEach((player) => {
       scores[player.name] = player.points;
     });
-    return scores
+    return scores;
   }
 
   public resetGame(): void {
-    this.deck = new Deck()
+    this.deck = new Deck();
     this.board = new Board(this.deck);
-    for(const player of this.players) {
+    for (const player of this.players) {
       player.drawCards(this.deck);
     }
   }
