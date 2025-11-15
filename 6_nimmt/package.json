@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "prompt-sync": "^4.2.0",
     "typescript": "^5.9.3"
   },
   "scripts": {
@@ -8,6 +9,7 @@
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
+    "@types/prompt-sync": "^4.2.3",
     "tslib": "^2.8.1"
   }
 }

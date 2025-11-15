@@ -1,9 +1,7 @@
 import { Game } from "./game";
 import { Player } from "./player";
-import { playManually } from "./manualPlay";
 import * as strategies from "./strategies";
 
-const NUMBER_OF_GAMES = 10000;
 const results: { [key: string]: number } = {};
 
 function playGame(players: Player[]) {
@@ -25,24 +23,13 @@ function playGame(players: Player[]) {
   }
 }
 
-function main() {
-  playManually();
-  return;
+export function playManually() {
   const players: Player[] = [
-    new Player("Random", strategies.RANDOM),
-    new Player("Highest", strategies.HIGHEST_CARD),
+    new Player("You", strategies.REAL_PLAYER),
+    new Player("Safe Memory 2", strategies.SAFE_WITH_MEMORY),
     new Player("Middle", strategies.KEEP_MIDDLE),
     new Player("Safe Memory", strategies.SAFE_WITH_MEMORY),
-    new Player("Lowest", strategies.LOWEST_CARD),
   ];
-  for (let i = 0; i < NUMBER_OF_GAMES; i++) {
-    playGame(players);
-  }
-  const lowestScore = Math.min(...Object.keys(results).map((key) => results[key]));
-  for (const result in results) {
-    results[result] = Math.round((results[result] / lowestScore) * 100) / 100;
-  }
+  playGame(players); 
   console.table(results);
 }
-
-main();
