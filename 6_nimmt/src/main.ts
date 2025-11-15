@@ -2,8 +2,8 @@ import { Game } from "./game";
 import { Player } from "./player";
 import * as strategies from "./strategies";
 
-const results: { [key: string]: number } = {};
 const NUMBER_OF_GAMES = 10000;
+const results: { [key: string]: number } = {};
 
 function playGame(players: Player[]) {
   for (const player of players) {
@@ -29,7 +29,7 @@ function main() {
     new Player("Random", strategies.RANDOM),
     new Player("Highest", strategies.HIGHEST_CARD),
     new Player("Middle", strategies.KEEP_MIDDLE),
-    new Player("Safe", strategies.MIDDLE_AND_SAFE),
+    new Player("Safe Memory", strategies.SAFE_WITH_MEMORY),
     new Player("Lowest", strategies.LOWEST_CARD),
   ];
   for (let i = 0; i < NUMBER_OF_GAMES; i++) {

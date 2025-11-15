@@ -6,13 +6,16 @@ const NUMBER_OF_ROWS = 4;
 
 export class Board {
   public rows: Card[][];
-  public cardsPlayed: Card[];
+  // Array with only 0 and 1. If a card is yet to be played, the value at index in the array of the corresponding card value is 1 otherwise it's 0.
+  public cardsLeft: number[];
 
   constructor(deck: Deck) {
-    this.cardsPlayed = [];
+    this.cardsLeft = new Array(105).fill(1);
     this.rows = Array.from({ length: NUMBER_OF_ROWS }, () => [] as Card[]);
     for (let i = 0; i < NUMBER_OF_ROWS; i++) {
-      this.rows[i].push(deck.drawCard());
+      const drawnCard = deck.drawCard()
+      this.rows[i].push(drawnCard);
+      this.cardsLeft[drawnCard.value] = 0;
     }
   }
 
@@ -46,6 +49,6 @@ export class Board {
       player.addPoints(pointsToAdd);
       this.rows[targetRowIndex] = [card];
     }
-    this.cardsPlayed.push(card);
+    this.cardsLeft[card.value] = 0;
   }
 }

@@ -42,49 +42,119 @@ export const HIGHEST_CARD: Strategy = {
   },
 };
 
-const mostDistantFrom60 = (handCards: Card[]) => {
-    const MIDDLE = 60;
-    let highestDistance = 0;
-    let indexOfHighestDistance = 0;
-    for (let i = 0; i < handCards.length; i++) {
-      const card = handCards[i];
-      const distance = Math.abs(card.value - MIDDLE);
-      if (distance > highestDistance) {
-        highestDistance = distance;
-        indexOfHighestDistance = i;
-      }
+function mostDistantFrom60(handCards: Card[]) {
+  const MIDDLE = 60;
+  let highestDistance = 0;
+  let indexOfHighestDistance = 0;
+  for (let i = 0; i < handCards.length; i++) {
+    const card = handCards[i];
+    const distance = Math.abs(card.value - MIDDLE);
+    if (distance > highestDistance) {
+      highestDistance = distance;
+      indexOfHighestDistance = i;
     }
-    return indexOfHighestDistance;
-};
+  }
+  return indexOfHighestDistance;
+}
 
 // Finds cards that are most distant from a center point
 export const KEEP_MIDDLE: Strategy = {
-    name: "Keep middle cards",
-    description: "Plays high and low cards first",
-    cardToPlay: (handCards: Card[]) => {
-      return mostDistantFrom60(handCards);
-    },
+  name: "Keep middle cards",
+  description: "Plays high and low cards first",
+  cardToPlay: (handCards: Card[]) => {
+    return mostDistantFrom60(handCards);
+  },
 };
+
+// a card is safe to play, if it is at most spacesLeftInRow higher than a card on the board
+function isSafeToPlay(
+  card: Card,
+  cardsOnBoard: Card[][],
+  numberOfPlayers: number
+) {
+  const rowProperties = cardsOnBoard.map((row) => {
+    return { lastCard: row[row.length - 1], cardsLeftInRow: 5 - row.length };
+  });
+  // console.table(cardsOnBoard)
+  // console.log(rowProperties);
+  const isSafe = rowProperties.some(property => {
+    const cardIsHigher = property.lastCard.value < card.value;
+    const maxDistance = Math.min(numberOfPlayers-1, property.cardsLeftInRow);
+    const cardIsSafe = card.value <= property.lastCard.value + maxDistance;
+    return cardIsHigher && cardIsSafe;
+  });
+  // console.log(isSafe);
+  // console.log(card)
+  return isSafe;
+}
 
 export const MIDDLE_AND_SAFE: Strategy = {
   name: "Middle and safe",
   description:
     "Plays high and low cards first, unless he has a card, that has a value at most n-1 higher than a card in a non full row",
-  cardToPlay: (handCards: Card[], cardsOnBoard: Card[][], cardsPlayed: Card[]) => {
+  cardToPlay: (
+    handCards: Card[],
+    cardsOnBoard: Card[][],
+    cardsLeft: number[],
+    numberOfPlayers: number
+  ) => {
     const mostDistant = mostDistantFrom60(handCards);
-    // Cards that are at the top of each row
-    const frontCards = cardsOnBoard.map(row => row[row.length-1]);
-    // also get how many cards are left to be played in each of the rows
+
+    for (const handCard of handCards) {
+      if (isSafeToPlay(handCard, cardsOnBoard, numberOfPlayers)) {
+        return handCards.indexOf(handCard);
+      }
+    }
+
     return mostDistant;
   },
 };
+
+function isSafeToPlayMemory(
+  card: Card, // card to be played
+  cardsOnBoard: Card[][],
+  cardsLeft: number[],
+  numberOfPlayers: number
+) {
+  const safeRanges = cardsOnBoard.map(row => {
+    const lastCard = row[row.length - 1];
+    const spacesLeftInRow = 5-row.length;
+    let highestPossibleDistance = spacesLeftInRow;
+    for (let i = lastCard.value; i < cardsLeft.length; i++) {
+      const cardYetToPlay = cardsLeft[i];
+      highestPossibleDistance -= cardYetToPlay;
+      if (highestPossibleDistance == 0) {
+        return { lowestSafe: lastCard.value, highestSafe: i};
+      }
+    }
+    return { lowestSafe: lastCard.value, highestSafe: lastCard.value};
+  });
+
+  const isSafe = safeRanges.some(range => card.value > range.lowestSafe && card.value <= range.highestSafe );
+  
+  // console.table(cardsOnBoard);
+  // console.log(safeRanges);
+  // console.log(card);
+  // console.log(isSafe);
+  return isSafe;
+}
 
 export const SAFE_WITH_MEMORY: Strategy = {
   name: "Safe with Memory",
   description:
     "Plays high and low cards first, unless he has a card, that has a value at most n+k-1 higher than a card in a non full row, n is number of players, k is how many cards in the range have been played allready",
-  cardToPlay: (handCards: Card[]) => {
+  cardToPlay: (
+    handCards: Card[],
+    cardsOnBoard: Card[][],
+    cardsLeft: number[],
+    numberOfPlayers: number) => {
     const mostDistant = mostDistantFrom60(handCards);
+
+    for (const handCard of handCards) {
+      if (isSafeToPlayMemory(handCard, cardsOnBoard, cardsLeft, numberOfPlayers)) {
+        return handCards.indexOf(handCard);
+      }
+    }
     return mostDistant;
   },
 };

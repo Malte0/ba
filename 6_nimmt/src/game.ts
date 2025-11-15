@@ -48,7 +48,7 @@ export class Game {
   public playRound(): void {
     const playedCards = this.players.map((player: Player) => ({
       player,
-      card: player.playCard(this.board.rows, this.board.cardsPlayed),
+      card: player.playCard(this.board.rows, this.board.cardsLeft, this.players.length),
     }));
     playedCards.sort((a, b) => a.card.value - b.card.value);
     for (const { player, card } of playedCards) {
