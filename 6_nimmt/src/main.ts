@@ -26,8 +26,10 @@ function playGame(players: Player[]) {
 }
 
 function main() {
-  // playManually();
-  // return;
+  if (config.Manual_Play) {
+    playManually();
+    return;
+  }
   const players: Player[] = [
     new Player("Random", strategies.RANDOM),
     new Player("Highest first", strategies.HIGHEST_CARD),

@@ -1,5 +1,6 @@
 import { Game } from "./game";
 import { Player } from "./player";
+import { prettyPrintBoard, prettyPrintHandCards, prettyPrintResults } from "./prettyPrint";
 import * as strategies from "./strategies";
 import { Card, Strategy } from "./types";
 const prompt = require("prompt-sync")({ sigint: true });
@@ -13,7 +14,6 @@ function playGame(players: Player[]) {
   const game: Game = new Game(players);
   while (game.playersHaveCardsInHand()) {
     game.playRound();
-    // game.printBoardState();
   }
   const scores = game.getScores();
   for (const player in scores) {
@@ -32,8 +32,8 @@ export function playManually() {
     new Player("Middle", strategies.KEEP_MIDDLE),
     new Player("Safe Memory", strategies.SAFE_WITH_MEMORY),
   ];
-  playGame(players); 
-  console.table(results);
+  playGame(players);
+  prettyPrintResults(results);
 }
 
 const REAL_PLAYER: Strategy = {
@@ -43,11 +43,13 @@ const REAL_PLAYER: Strategy = {
     if (handCards.length == 1) {
       return 0;
     }
-    console.log("Cards on Board:");
-    console.table(cardsOnBoard.map(row => row.map(card => card.value)));
-    console.log("These are the Cards you can Play:");
-    console.table(handCards.map(card => card.value));
-    let indexToPlay = Number(prompt("Index to play: "));
+    prettyPrintBoard(cardsOnBoard);
+    prettyPrintHandCards(handCards);
+    let indexToPlay = -1;
+    while (indexToPlay === -1) {
+      let cardToPlay = Number(prompt("Card to play: "));
+      indexToPlay = handCards.map((card) => card.value).indexOf(cardToPlay);
+    }
     return indexToPlay;
   },
 };
