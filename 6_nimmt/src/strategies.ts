@@ -1,4 +1,5 @@
 import { Card, Strategy } from "./types";
+import config from "./config";
 
 export const RANDOM: Strategy = {
   name: "Random",
@@ -42,8 +43,10 @@ export const HIGHEST_CARD: Strategy = {
   },
 };
 
-function mostDistantFrom60(handCards: Card[]) {
-  const MIDDLE = 60;
+function mostDistantFrom60(handCards: Card[], numberOfPlayers: number) {
+  const DIVISOR_FOR_MIDDLE = 60/104;
+  const TOTAL_CARDS = config.Profi_Variante ? numberOfPlayers*10+4 : config.Total_Cards_Default;
+  const MIDDLE = DIVISOR_FOR_MIDDLE * TOTAL_CARDS;
   let highestDistance = 0;
   let indexOfHighestDistance = 0;
   for (let i = 0; i < handCards.length; i++) {
@@ -61,8 +64,8 @@ function mostDistantFrom60(handCards: Card[]) {
 export const KEEP_MIDDLE: Strategy = {
   name: "Keep middle cards",
   description: "Plays high and low cards first",
-  cardToPlay: (handCards: Card[]) => {
-    return mostDistantFrom60(handCards);
+  cardToPlay: (handCards: Card[], cardsOnBoard, cardsLeft, numberOfPlayers) => {
+    return mostDistantFrom60(handCards, numberOfPlayers);
   },
 };
 
@@ -89,7 +92,7 @@ export const MIDDLE_AND_SAFE: Strategy = {
   description:
     "Plays high and low cards first, unless he has a card, that has a value at most n-1 higher than a card in a non full row",
   cardToPlay: (handCards: Card[], cardsOnBoard: Card[][], cardsLeft: number[], numberOfPlayers: number) => {
-    const mostDistant = mostDistantFrom60(handCards);
+    const mostDistant = mostDistantFrom60(handCards, numberOfPlayers);
 
     for (const handCard of handCards) {
       if (isSafeToPlay(handCard, cardsOnBoard, numberOfPlayers)) {
@@ -143,7 +146,7 @@ export const SAFE_WITH_MEMORY: Strategy = {
   description:
     "Plays high and low cards first, unless he has a card, that has a value at most n+k-1 higher than a card in a non full row, n is number of players, k is how many cards in the range have been played allready",
   cardToPlay: (handCards: Card[], cardsOnBoard: Card[][], cardsLeft: number[], numberOfPlayers: number) => {
-    const mostDistant = mostDistantFrom60(handCards);
+    const mostDistant = mostDistantFrom60(handCards, numberOfPlayers);
 
     const totalCardsOnBoard = cardsOnBoard.map((row) => row.length).reduce((prev, curr) => prev + curr, 0);
     if (totalCardsOnBoard < 9) return mostDistant;
