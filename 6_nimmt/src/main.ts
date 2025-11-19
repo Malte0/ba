@@ -3,6 +3,7 @@ import { Player } from "./player";
 import { playManually } from "./manualPlay";
 import * as strategies from "./strategies";
 import config from "./config";
+import { prettyPrintResults } from "./prettyPrint";
 
 const results: { [key: string]: number } = {};
 
@@ -44,7 +45,7 @@ function main() {
   for (const result in results) {
     results[result] = Math.round((results[result] / lowestScore) * 100) / 100;
   }
-  console.table(results);
+  prettyPrintResults(results);
 }
 
 main();

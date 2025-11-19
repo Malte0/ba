@@ -16,7 +16,7 @@ function drawDevider(
       devider += endCorner;
       break;
     }
-    devider += middleCorner + "────";
+    devider += middleCorner + "".padStart(STANDARD_COLUMN_WIDTH+2, "─");
   }
   console.log(devider);
 }
@@ -56,33 +56,39 @@ export function prettyPrintHandCards(handCards: Card[]) {
 }
 
 export function prettyPrintResults(results: { [key: string]: number }) {
-    
+  // Sort scores descending
+  let sortedScores: [string, number][] = [];
+  for (const playerName in results) {
+    sortedScores.push([playerName, results[playerName]]);
+  }
+  sortedScores.sort((a, b) => {
+    return a[1] - b[1];
+  });
+  // print results
   console.log("Game Results:");
   const COLUMN_COUNT = 2;
-  const LONGEST_NAME_LENGTH = Object.keys(results)
-  .map((key) => key.length)
-  .reduce((prev, curr) => Math.max(prev, curr), 0);
-  const LONGEST_RESULT_LENGTH = Object.values(results).map(val => val.toString().length).reduce((prev, curr) => Math.max(prev, curr), 0);
-  
+  const LONGEST_NAME_LENGTH = sortedScores
+    .map((pair) => pair[0].length)
+    .reduce((prev, curr) => Math.max(prev, curr), 0);
+  const LONGEST_RESULT_LENGTH = sortedScores
+    .map((pair) => pair[1].toString().length)
+    .reduce((prev, curr) => Math.max(prev, curr), 0);
+
   // +2 because of spaces left and right of name
-  drawDevider(LONGEST_NAME_LENGTH+2, COLUMN_COUNT, "┌", "┬", "┐");
-  for ( let i = 0; i < Object.keys(results).length; i++) {
-    const playerName = Object.keys(results)[i];
-    console.log(
-      `│ ${playerName.padStart(LONGEST_NAME_LENGTH, " ")} │ ${results[
-        playerName
-      ]
-        .toString()
-        .padEnd(LONGEST_RESULT_LENGTH, " ")} │`
-    );
+  drawDevider(LONGEST_NAME_LENGTH + 2, COLUMN_COUNT, "┌", "┬", "┐");
+  for (let i = 0; i < sortedScores.length; i++) {
+    const playerName = sortedScores[i][0];
+    const nameFormatted = playerName.padStart(LONGEST_NAME_LENGTH, " ");
+    const scoreFormatted = results[playerName]
+      .toString()
+      .padEnd(Math.max(LONGEST_RESULT_LENGTH, STANDARD_COLUMN_WIDTH), " ");
+    console.log(`│ ${nameFormatted} │ ${scoreFormatted} │`);
 
     // if playerName is the last name in the list
-    if (
-      i === Object.keys(results).length-1
-    ) {
-      drawDevider(LONGEST_NAME_LENGTH+2, COLUMN_COUNT, "└", "┴", "┘");
+    if (i === sortedScores.length - 1) {
+      drawDevider(LONGEST_NAME_LENGTH + 2, COLUMN_COUNT, "└", "┴", "┘");
       return;
     }
-    drawDevider(LONGEST_NAME_LENGTH+2, COLUMN_COUNT, "├", "┼", "┤");
+    drawDevider(LONGEST_NAME_LENGTH + 2, COLUMN_COUNT, "├", "┼", "┤");
   }
 }
