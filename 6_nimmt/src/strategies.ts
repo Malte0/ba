@@ -43,15 +43,22 @@ export const HIGHEST_CARD: Strategy = {
   },
 };
 
-function mostDistantFrom60(handCards: Card[], numberOfPlayers: number) {
-  const DIVISOR_FOR_MIDDLE = 60/104;
-  const TOTAL_CARDS = config.Profi_Variante ? numberOfPlayers*10+4 : config.Total_Cards_Default;
+function centerCard(numberOfPlayers: number) {
+  const DIVISOR_FOR_MIDDLE = 60 / 104;
+  const TOTAL_CARDS = config.Profi_Variante
+    ? numberOfPlayers * 10 + 4
+    : config.Total_Cards_Default;
   const MIDDLE = DIVISOR_FOR_MIDDLE * TOTAL_CARDS;
+  return MIDDLE;
+}
+
+function mostDistantFromCenter(handCards: Card[], numberOfPlayers: number) {
+  const middle = centerCard(numberOfPlayers);
   let highestDistance = 0;
   let indexOfHighestDistance = 0;
   for (let i = 0; i < handCards.length; i++) {
     const card = handCards[i];
-    const distance = Math.abs(card.value - MIDDLE);
+    const distance = Math.abs(card.value - middle);
     if (distance > highestDistance) {
       highestDistance = distance;
       indexOfHighestDistance = i;
@@ -65,12 +72,16 @@ export const KEEP_MIDDLE: Strategy = {
   name: "Keep middle cards",
   description: "Plays high and low cards first",
   cardToPlay: (handCards: Card[], cardsOnBoard, cardsLeft, numberOfPlayers) => {
-    return mostDistantFrom60(handCards, numberOfPlayers);
+    return mostDistantFromCenter(handCards, numberOfPlayers);
   },
 };
 
 // a card is safe to play, if it is at most spacesLeftInRow higher than a card on the board
-function isSafeToPlay(card: Card, cardsOnBoard: Card[][], numberOfPlayers: number) {
+function isSafeToPlay(
+  card: Card,
+  cardsOnBoard: Card[][],
+  numberOfPlayers: number
+) {
   const rowProperties = cardsOnBoard.map((row) => {
     return { lastCard: row[row.length - 1], cardsLeftInRow: 5 - row.length };
   });
@@ -91,8 +102,13 @@ export const MIDDLE_AND_SAFE: Strategy = {
   name: "Middle and safe",
   description:
     "Plays high and low cards first, unless he has a card, that has a value at most n-1 higher than a card in a non full row",
-  cardToPlay: (handCards: Card[], cardsOnBoard: Card[][], cardsLeft: number[], numberOfPlayers: number) => {
-    const mostDistant = mostDistantFrom60(handCards, numberOfPlayers);
+  cardToPlay: (
+    handCards: Card[],
+    cardsOnBoard: Card[][],
+    cardsLeft: number[],
+    numberOfPlayers: number
+  ) => {
+    const mostDistant = mostDistantFromCenter(handCards, numberOfPlayers);
 
     for (const handCard of handCards) {
       if (isSafeToPlay(handCard, cardsOnBoard, numberOfPlayers)) {
@@ -121,7 +137,8 @@ function rowIndexCardWouldBePlacedAt(card: Card, cardsOnBoard: Card[][]) {
 function isSafeToPlayMemory(
   card: Card, // card to be played
   cardsOnBoard: Card[][],
-  cardsLeft: number[]
+  cardsLeft: number[],
+  unreliability: number
 ) {
   const targetRowIndex = rowIndexCardWouldBePlacedAt(card, cardsOnBoard);
   if (targetRowIndex == -1) return false; // card cannot be placed at all
@@ -130,8 +147,16 @@ function isSafeToPlayMemory(
   const spacesLeftInRow = 5 - targetRow.length;
 
   let highestPossibleDistance = spacesLeftInRow;
-  for (let highestPossibleValue = lastCard.value; highestPossibleValue < cardsLeft.length; highestPossibleValue++) {
-    const cardYetToPlay = cardsLeft[highestPossibleValue];
+  for (
+    let highestPossibleValue = lastCard.value;
+    highestPossibleValue < cardsLeft.length;
+    highestPossibleValue++
+  ) {
+    // if memory is unrealiable takes a guess, whether card has been played
+    const falseMemory: boolean = Math.random() < unreliability;
+    const cardYetToPlay = falseMemory
+      ? Math.round(Math.random())
+      : cardsLeft[highestPossibleValue];
     highestPossibleDistance -= cardYetToPlay;
     if (highestPossibleDistance == 0) {
       return card.value > lastCard.value && card.value <= highestPossibleValue;
@@ -145,14 +170,21 @@ export const SAFE_WITH_MEMORY: Strategy = {
   name: "Safe with Memory",
   description:
     "Plays high and low cards first, unless he has a card, that has a value at most n+k-1 higher than a card in a non full row, n is number of players, k is how many cards in the range have been played allready",
-  cardToPlay: (handCards: Card[], cardsOnBoard: Card[][], cardsLeft: number[], numberOfPlayers: number) => {
-    const mostDistant = mostDistantFrom60(handCards, numberOfPlayers);
+  cardToPlay: (
+    handCards: Card[],
+    cardsOnBoard: Card[][],
+    cardsLeft: number[],
+    numberOfPlayers: number
+  ) => {
+    const mostDistant = mostDistantFromCenter(handCards, numberOfPlayers);
 
-    const totalCardsOnBoard = cardsOnBoard.map((row) => row.length).reduce((prev, curr) => prev + curr, 0);
+    const totalCardsOnBoard = cardsOnBoard
+      .map((row) => row.length)
+      .reduce((prev, curr) => prev + curr, 0);
     if (totalCardsOnBoard < 9) return mostDistant;
 
     for (const handCard of handCards) {
-      if (isSafeToPlayMemory(handCard, cardsOnBoard, cardsLeft)) {
+      if (isSafeToPlayMemory(handCard, cardsOnBoard, cardsLeft, 0)) {
         // console.log(cardsOnBoard);
         // console.log(handCards);
         // console.log(handCard);
@@ -165,8 +197,116 @@ export const SAFE_WITH_MEMORY: Strategy = {
   },
 };
 
+// sorts cards by distance from center, descending
+function sortByDistance(cards: Card[], numberOfPlayers: number) {
+  const center = centerCard(numberOfPlayers);
+  const cardsWithDistance: [Card, number][] = cards.map((card) => {
+    return [card, Math.abs(card.value - center)];
+  });
+  // sort descending
+  cardsWithDistance.sort((a, b) => a[1] - b[1]).reverse();
+  const cardsByDistance = cardsWithDistance.map((pair) => pair[0]);
+  return cardsByDistance;
+}
+
+// The risk of a card is calculated by
+// - Checking which row a card would likely go into (rows with closest card in case row with closest gets taken by another player)
+// - The number of points in that row
+// - The distance from center of that card (not playing it now might make one stuck with that card)
+function riskOfCard(
+  card: Card,
+  cardsOnBoard: Card[][],
+  numberOfPlayers: number, // not used yet, but could be used to adjust probabilities based on players
+  cardsLeft: number[]
+) {
+  const rowStats: {
+    lastCard: Card;
+    cardsLeftInRow: number;
+    pointsInRow: number;
+    highestSafeValue: number;
+  }[] = cardsOnBoard.map((row) => {
+    return {
+      lastCard: row[row.length - 1],
+      cardsLeftInRow: 5 - row.length,
+      pointsInRow: row.map((card) => card.points).reduce((a, b) => a + b, 0),
+      highestSafeValue: 1,
+    };
+  });
+
+  for (const row of rowStats) {
+    let highestPossibleDistance = row.cardsLeftInRow;
+    for (
+      let highestPossibleValue = row.lastCard.value;
+      highestPossibleValue < cardsLeft.length;
+      highestPossibleValue++
+    ) {
+      const cardYetToPlay = cardsLeft[highestPossibleValue];
+      highestPossibleDistance -= cardYetToPlay;
+      if (highestPossibleDistance == 0) {
+        row.highestSafeValue = highestPossibleValue;
+        break;
+      }
+    }
+  }
+
+  // determine order of rows where card would go to
+
+  return 0;
+}
+
+export const SELECTIVE_DISTANCE: Strategy = {
+  name: "Selective Distance",
+  description:
+    "Checks whether high or low cards are safer to play, plays the card with the least risk. The least risk is a probability of having to take a row multiplied by the number of points present in the rows.",
+  cardToPlay: (
+    handCards: Card[],
+    cardsOnBoard: Card[][],
+    cardsLeft: number[],
+    numberOfPlayers: number
+  ) => {
+    const cardsByDistance: Card[] = sortByDistance(handCards, numberOfPlayers);
+
+    return 0;
+  },
+};
+
+export const UNRELIABLE: (unreliability: number) => Strategy = (
+  unreliability: number
+) => {
+  return {
+    name: "Unreliable",
+    description: "Same as safe with memory, but has unreliable memory",
+    cardToPlay: (
+      handCards: Card[],
+      cardsOnBoard: Card[][],
+      cardsLeft: number[],
+      numberOfPlayers: number
+    ) => {
+      const mostDistant = mostDistantFromCenter(handCards, numberOfPlayers);
+
+      const totalCardsOnBoard = cardsOnBoard
+        .map((row) => row.length)
+        .reduce((prev, curr) => prev + curr, 0);
+      if (totalCardsOnBoard < 9) return mostDistant;
+
+      for (const handCard of handCards) {
+        if (
+          isSafeToPlayMemory(handCard, cardsOnBoard, cardsLeft, unreliability)
+        ) {
+          // console.log(cardsOnBoard);
+          // console.log(handCards);
+          // console.log(handCard);
+          // console.log(handCards.indexOf(handCard));
+          // throw new Error();
+          return handCards.indexOf(handCard);
+        }
+      }
+      return mostDistant;
+    },
+  };
+};
+
 // Additional ideas:
-// using a card to take a low amount of points on purpose
 // vorhersehen, welchen stapel man beim Spielen einer zb. sehr hohen karte nehmen muesste und dann ne andere spielen
 // Only other good sources for strategies
 // https://math.rptu.de/komms/archiv/berichte-modellierungswochen/03/2019-spiele-spielstrategien

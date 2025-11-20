@@ -4,6 +4,7 @@ import { playManually } from "./manualPlay";
 import * as strategies from "./strategies";
 import config from "./config";
 import { prettyPrintResults } from "./prettyPrint";
+import { writeResultToFile } from "./writeToFile";
 
 const results: { [key: string]: number } = {};
 
@@ -26,7 +27,7 @@ function playGame(players: Player[]) {
   }
 }
 
-function main() {
+function main(unreliability: number, i: number) {
   if (config.Manual_Play) {
     playManually();
     return;
@@ -34,7 +35,7 @@ function main() {
   const players: Player[] = [
     new Player("Random", strategies.RANDOM),
     new Player("Highest first", strategies.HIGHEST_CARD),
-    new Player("Lowest first", strategies.LOWEST_CARD),
+    // new Player("Unreliable", strategies.UNRELIABLE(unreliability)),
     new Player("Middle", strategies.KEEP_MIDDLE),
     new Player("Safe Memory", strategies.SAFE_WITH_MEMORY),
   ];
@@ -45,7 +46,17 @@ function main() {
   for (const result in results) {
     results[result] = Math.round((results[result] / lowestScore) * 100) / 100;
   }
+  writeResultToFile(results, unreliability, i, "Unreliable", "results.txt");
   prettyPrintResults(results);
 }
 
-main();
+// for (let i = 0; i <= 10; i++) {
+//   const unreliability = i / 100;
+//   console.log(`Iteration ${i}`);
+//   for (let j = 0; j < 10; j++) {
+//     main(unreliability, i);
+//   }
+// }
+// console.log("DONE");
+
+main(1,1)
