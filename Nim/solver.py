@@ -14,6 +14,7 @@ def payoff(N, T, step, max_steps):
         lut[(step, N-i, Ts0, False)] = 0 if N-i+Ts0 >= N else max([lut[(step-1, N-i+Ts0, T[step-1][0], True)], lut[(step-1, N-i+Ts0, T[step-1][1], True)]])
         
         lut[(step, N-i, Ts1, True)] = 1 if N-i+Ts1 >= N else min([lut[(step-1, N-i+Ts1, T[step-1][0], False)], lut[(step-1, N-i+Ts1, T[step-1][1], False)]])
+        # Idea: Because whenever I don't win oponnent wins, can I just invert the result of my own choice for opponents turn and therefore cut half the dict entries?
         lut[(step, N-i, Ts1, False)] = 0 if N-i+Ts1 >= N else max([lut[(step-1, N-i+Ts1, T[step-1][0], True)], lut[(step-1, N-i+Ts1, T[step-1][1], True)]])
     
     if step == max_steps:
@@ -30,6 +31,6 @@ def create_lookup_table(N, T, max_steps):
 if __name__ == "__main__":
     N = 23
     K = 5
-    MAX_STEPS = 3
+    MAX_STEPS = 7
     T = create_T(N, K)
     print(create_lookup_table(N, T, MAX_STEPS))
