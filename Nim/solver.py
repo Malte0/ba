@@ -1,6 +1,7 @@
 
 from game import create_T
 
+
 class LookUpTable:
     def __init__(self):
         self.lut = {}
@@ -12,7 +13,7 @@ class LookUpTable:
         self.lut.clear()
     
     def populate(self, N, T, max_steps):
-        self.clear()
+        self.lut.clear()
         if max_steps > 0:
             self.recursive_iteration(N, T, 1, max_steps)
 

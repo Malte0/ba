@@ -6,7 +6,7 @@ class Player:
         self.thinking_steps = thinking_steps
         self.lut = LookUpTable()
     
-    def think_ahead(self, N, T):
+    def plan_ahead(self, N, T):
         self.lut.populate(N, T, self.thinking_steps)
         # self.lut.print()
 
