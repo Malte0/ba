@@ -14,12 +14,9 @@ class Player:
         return random.choice(Ti)
 
     def lut_move(self, s, ns, Ti):
-        Ti0_result = self.lut.get(s, ns, Ti[0])
-        Ti1_result = self.lut.get(s, ns, Ti[1])
-        if Ti0_result == 1:
-            return Ti[0]
-        elif Ti1_result == 1:
-            return Ti[1]
+        for move in Ti:
+            if self.lut.get(s, ns, move) == 1:
+                return move
         return None
     
     def make_move(self, s, ns, T):
