@@ -13,13 +13,17 @@ class Player:
     def random_move(self, Ti):
         return random.choice(Ti)
 
-    def lut_move(self, s, ns, Ts):
+    def lut_move(self, N, s, ns, Ts):
+        if ns+Ts[0] >= N:
+            return Ts[0]
+        elif ns+Ts[1] >= N:
+            return Ts[1]
         return Ts[0] if self.lut.get(s+1, ns+Ts[0], False) == 1 else Ts[1]
     
-    def make_move(self, s, ns, T):
+    def make_move(self, N, s, ns, T):
         Ts = T[s]
         if self.lut.get(s, ns, True) == 1:
-            return self.lut_move(s, ns, Ts)
+            return self.lut_move(N, s, ns, Ts)
         return self.random_move(Ts)
 
 

@@ -52,12 +52,12 @@ class LookUpTable:
 
 
 def main():
-    N = 5
-    K = 3
-    MAX_STEPS = 100
+    N = 100
+    K = 8
+    MAX_STEPS = 4
     T = create_T(N, K)
     lut = LookUpTable()
-    print(lut.get_possible_ns(N))
+    # print(lut.get_possible_ns(N))
     lut.populate(N, T, MAX_STEPS)
     lut.print()
 

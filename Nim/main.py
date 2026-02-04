@@ -2,16 +2,16 @@ from game import create_T
 from players import Player
 import random
 
-N = 5
-K = 3
+N = 100
+K = 8
 NUMBER_OF_GAMES = 100
-NUMBER_OF_PLAYERS = 2
+NUMBER_OF_PLAYERS = 4
 VERBOSE = False
 
 def create_players():
     players = []
     for i in range(NUMBER_OF_PLAYERS):
-        players.append(Player(thinking_steps=i*100))
+        players.append(Player(thinking_steps=80+i*6))
     return players
 
 def play_round(player1: Player, player2: Player, results):
@@ -36,8 +36,8 @@ def play_game(N, T, player1: Player, player2: Player):
     s = 0
     turnSwitch = random.choice([True, False])
     while True:
-        choice = player1.make_move(s, ns, T) if turnSwitch else player2.make_move(s, ns, T)
-        if VERBOSE: print(f"Position: {ns} - Options: {T[s]} - Step: {s}")
+        choice = player1.make_move(N, s, ns, T) if turnSwitch else player2.make_move(N, s, ns, T)
+        if VERBOSE: print(f"Ns: {ns} - Ts: {T[s]} - Step: {s}")
         if VERBOSE: print(f"Player {player1.thinking_steps if turnSwitch else player2.thinking_steps} chose: {choice}")
         ns += choice
         if ns >= N:
