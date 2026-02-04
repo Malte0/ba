@@ -4,4 +4,5 @@ import random
 
 def create_T(N, K):
     T = [(random.randint(1, K), random.randint(1, K)) for _ in range(N)]
+    return [(1,2), (2,3), (1,2), (1,3), (1,2)]
     return T

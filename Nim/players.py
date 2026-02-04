@@ -13,17 +13,14 @@ class Player:
     def random_move(self, Ti):
         return random.choice(Ti)
 
-    def lut_move(self, s, ns, Ti):
-        for move in Ti:
-            if self.lut.get(s, ns, move) == 1:
-                return move
-        return None
+    def lut_move(self, s, ns, Ts):
+        return Ts[0] if self.lut.get(s+1, ns+Ts[0], False) == 1 else Ts[1]
     
     def make_move(self, s, ns, T):
-        Ti = T[s]
-        if self.lut.get(s, ns, Ti[0]):
-            return self.lut_move(s, ns, Ti)
-        return self.random_move(Ti)
+        Ts = T[s]
+        if self.lut.get(s, ns, True) == 1:
+            return self.lut_move(s, ns, Ts)
+        return self.random_move(Ts)
 
 
 # TODO: Does it make sense to consider looking ahead, so that if we have no guaranteed win, we can still make a move where it's possible for the opponent to make a mistake for us to end up in a guaranteed winning scenario

@@ -1,11 +1,12 @@
 from game import create_T
 from players import Player
+import random
 
-N = 231
-K = 7
-NUMBER_OF_GAMES = 1
+N = 5
+K = 3
+NUMBER_OF_GAMES = 100
 NUMBER_OF_PLAYERS = 2
-VERBOSE = True
+VERBOSE = False
 
 def create_players():
     players = []
@@ -33,7 +34,7 @@ def play_tournament():
 def play_game(N, T, player1: Player, player2: Player):
     ns = 0
     s = 0
-    turnSwitch = True
+    turnSwitch = random.choice([True, False])
     while True:
         choice = player1.make_move(s, ns, T) if turnSwitch else player2.make_move(s, ns, T)
         if VERBOSE: print(f"Position: {ns} - Options: {T[s]} - Step: {s}")

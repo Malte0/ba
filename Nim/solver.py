@@ -1,54 +1,63 @@
 
 from game import create_T
 
-
 class LookUpTable:
     def __init__(self):
         self.lut = {}
     
-    def get(self, s, ns, Ti):
-        return self.lut.get((s, ns, Ti, True), None)
+    def print(self):
+        for key, value in self.lut.items():
+            print(f"{key}: {value}")
+    
+    def get(self, s, ns, myTurn):
+        return self.lut.get((s, ns, myTurn), None)
     
     def clear(self):
         self.lut.clear()
     
     def populate(self, N, T, max_steps):
-        self.lut.clear()
+        self.clear()
         if max_steps > 0:
-            self.recursive_iteration(N, T, 1, max_steps)
+            self.recursive_iteration(N, T, max_steps)
 
-    def recursive_iteration(self, N, T, s, max_steps):
-        step = N-s-1
-        if step < 0:
-            return
-        # TODO: are the step indices correct? They might be off by one too much
-        Ts0 = T[step][0]
-        Ts1 = T[step][1]
-        
-        # N-step to N-1
-        for i in range(1, s+1):
-            # (step, ns, Tchoice, myTurn)
-            wins0 = N-i+Ts0 >= N
-            wins1= N-i+Ts1 >= N
-            self.lut[(step, N-i, Ts0, True)] = 1 if wins0 else min([self.lut[(step+1, N-i+Ts0, T[step+1][0], False)], self.lut[(step+1, N-i+Ts0, T[step+1][1], False)]])
-            self.lut[(step, N-i, Ts0, False)] = 0 if wins0 else max([self.lut[(step+1, N-i+Ts0, T[step+1][0], True)], self.lut[(step+1, N-i+Ts0, T[step+1][1], True)]])
-            self.lut[(step, N-i, Ts1, True)] = 1 if wins1 else min([self.lut[(step+1, N-i+Ts1, T[step+1][0], False)], self.lut[(step+1, N-i+Ts1, T[step+1][1], False)]])
-            self.lut[(step, N-i, Ts1, False)] = 0 if wins1 else max([self.lut[(step+1, N-i+Ts1, T[step+1][0], True)], self.lut[(step+1, N-i+Ts1, T[step+1][1], True)]])
-        
-        if s == max_steps:
-            return
-        self.recursive_iteration(N, T, s+1, max_steps)
-    
-    def print(self):
-        for key, value in self.lut.items():
-            print(f"{key}: {value}")
+    # def get_possible_ns(self, N, K):
+    def get_possible_ns(self, N):
+        possible_ns = [[] for _ in range(N)]
+        # produces N-1, ..., 0
+        for step in range(N-1, -1, -1):
+            for ns in range(step, N):
+                # because on step 0 ns is always 0
+                if step == 0:
+                    possible_ns[step].append(0)
+                    break
+                # because then is ns larger then reachable by adding K to the previous step
+                # needs K as argument
+                # if ns > step-1+K:
+                #     continue
+                possible_ns[step].append(ns)
+        return possible_ns
+
+    def recursive_iteration(self, N, T, max_steps):
+        possible_ns = self.get_possible_ns(N)
+        # produces N-1, ..., 0
+        for step in range(N-1, -1, -1):
+            if N-step > max_steps:
+                break
+            for ns in possible_ns[step]:
+                Ts0 = T[step][0]
+                Ts1 = T[step][1]
+                isWinning = ns+Ts0 >= N or ns+Ts1 >= N
+                self.lut[(step, ns, True)] = 1 if isWinning else max([self.lut[(step+1,  ns+Ts0, False)], self.lut[(step+1, ns+Ts1, False)]])
+                self.lut[(step, ns, False)] = 0 if isWinning else min([self.lut[(step+1, ns+Ts0, True)], self.lut[(step+1, ns+Ts1, True)]])
+
 
 def main():
     N = 5
     K = 3
-    MAX_STEPS = 2
+    MAX_STEPS = 100
     T = create_T(N, K)
     lut = LookUpTable()
+    print(lut.get_possible_ns(N))
     lut.populate(N, T, MAX_STEPS)
     lut.print()
 
