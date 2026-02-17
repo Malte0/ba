@@ -1,18 +1,15 @@
 from game import create_T
-from players import Player
+from players import Player, create_players
 import random
+import matplotlib.pyplot as plt
 
 N = 100
 K = 8
-NUMBER_OF_GAMES = 100
-NUMBER_OF_PLAYERS = 4
+NUMBER_OF_GAMES = 1000
+NUMBER_OF_PLAYERS = 8
+def player_thinking_steps(player_index): 
+    return 79+player_index*3
 VERBOSE = False
-
-def create_players():
-    players = []
-    for i in range(NUMBER_OF_PLAYERS):
-        players.append(Player(thinking_steps=80+i*6))
-    return players
 
 def play_round(player1: Player, player2: Player, results):
     T = create_T(N, K)
@@ -23,13 +20,16 @@ def play_round(player1: Player, player2: Player, results):
     return results
 
 def play_tournament():
-    players = create_players()
-    results = {}
+    players = create_players(NUMBER_OF_PLAYERS, player_thinking_steps)
+    results = {} # dict of how may games players have won
+    games_played = {} # dict of how many games players have played
     for i in range(len(players)):
         for j in range(i+1, len(players)):
             for _ in range(NUMBER_OF_GAMES):
+                games_played[players[i].thinking_steps] = games_played.get(players[i].thinking_steps, 0)+1
+                games_played[players[j].thinking_steps] = games_played.get(players[j].thinking_steps, 0)+1
                 results = play_round(players[i], players[j], results)
-    return results
+    return results, games_played
 
 def play_game(N, T, player1: Player, player2: Player):
     ns = 0
@@ -46,13 +46,14 @@ def play_game(N, T, player1: Player, player2: Player):
         s += 1
         turnSwitch = not turnSwitch
 
-def normalize_results(results):
-    total_games = sum(results.values())
-    normalized = {key: f"{round(value / total_games * 100)}%" for key, value in results.items()}
-    return normalized
-
 if __name__ == "__main__":
-    results = play_tournament()
-    results = normalize_results(results)
+    X = range(10)
+    results, games_played = play_tournament()
+    plot_x = [key for key, value in results.items()]
+    plot_y = [round((value / games_played[key]) * 100, 2) for key, value in results.items()]
     for key, value in results.items():
-        print(f"Player with {key} thinking steps won {value} games")
+        player_win_percentage = round((value / games_played[key]) * 100, 2)
+        print(f"Player with {key} thinking steps won {player_win_percentage}% games")
+
+    plt.plot(plot_x, plot_y)
+    plt.show()

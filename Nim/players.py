@@ -26,5 +26,8 @@ class Player:
             return self.lut_move(N, s, ns, Ts)
         return self.random_move(Ts)
 
-
-# TODO: Does it make sense to consider looking ahead, so that if we have no guaranteed win, we can still make a move where it's possible for the opponent to make a mistake for us to end up in a guaranteed winning scenario
+def create_players(number_of_players, player_thinking_steps):
+    players = []
+    for i in range(number_of_players):
+        players.append(Player(player_thinking_steps(i)))
+    return players
