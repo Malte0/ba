@@ -1,6 +1,7 @@
 from random import randrange
 
 class Card_Deck:
+    # [card_value: amount_of_cards]
     cards = {}
 
     def __init__(self):
