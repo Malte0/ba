@@ -46,6 +46,6 @@ class Player:
     def makeStartingMove(self, player):
         start_random(player)
 
-    def makeMove(self, player):
-        open_random_card(player)
+    def makeMove(self, player, middle_card, card_deck):
+        open_random_card(player, middle_card, card_deck)
     

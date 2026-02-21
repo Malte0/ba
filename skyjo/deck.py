@@ -17,11 +17,11 @@ class Card_Deck:
     def draw_card(self):
         random_card_index = randrange(self.cards_left())+1
         current_count = 0
-        for key, value in self.cards.items():
-            current_count += value
+        for card_value, card_count in self.cards.items():
+            current_count += card_count
             if random_card_index <= current_count:
-                self.cards[key] = self.cards[key]-1
-                return key
+                self.cards[card_value] = self.cards[card_value]-1
+                return card_value
 
     def print_deck(self):
         for key, value in self.cards.items():

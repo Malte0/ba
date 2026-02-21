@@ -1,18 +1,24 @@
 
+from card import Card
 from deck import Card_Deck
 from player import Player
 
 class Game:
+    middle_card: Card
+    card_deck: Card_Deck
+    players: list[Player]
+
     def __init__(self, players: list[Player], card_deck: Card_Deck):
         self.players = players
         self.card_deck = card_deck
+        self.middle_card = Card(card_deck.draw_card())
 
     def start_game(self):
         # all players make opening move
         for player in self.players:
             player.makeStartingMove(player)
         # choose starting player who has the most points
-        most_open_points = 0
+        most_open_points = -100
         index_of_player_with_most_points = None
         for i in range(len(self.players)):
             player = self.players[i]
@@ -29,9 +35,14 @@ class Game:
 
         current_player_index = index_of_player_with_most_points
         while current_player_index < last_index_to_play:
-            player: Player = self.players[current_player_index % len(self.players)]
-            player.makeMove(player)
-            if player.has_finished() and not last_round:
+            player_to_move: Player = self.players[current_player_index % len(self.players)]
+            # Draw or take middle card
+            # if draw, take card or open card
+
+            new_middle_card = player_to_move.makeMove(player_to_move, self.middle_card, self.card_deck)
+            self.middle_card = new_middle_card
+
+            if player_to_move.has_finished() and not last_round:
                 last_index_to_play = current_player_index + len(self.players)-1
                 last_round = True
             current_player_index += 1
