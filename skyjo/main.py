@@ -13,7 +13,11 @@ def main():
     player1 = Player(deck, "Justin")
     player2 = Player(deck, "Good Player", startingMove=start_random, moveStrategy=simple_strategy)
     player3 = Player(deck, "Taylor")
+    player1.print_grid()
+    player2.print_grid()
+    player3.print_grid()
     game = Game([player1, player2, player3], deck)
+    game.number_of_rounds = 1000
     game.start_game()
 
 if __name__ == "__main__":

@@ -11,12 +11,15 @@ class Player:
         self.card_grid = []
         self.makeStartingMove=startingMove
         self.makeMove=moveStrategy
+        self.draw_grid(deck)
+    
+    def draw_grid(self, deck):
         for row_index in range(3):
             self.card_grid.append([])
             for column_index in range(4):
                 card = Card(deck.draw_card())
                 self.card_grid[row_index].append(card)
-        
+
     def print_grid(self):
         for row in self.card_grid:
             row_string = ""

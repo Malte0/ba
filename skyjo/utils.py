@@ -5,7 +5,7 @@ from deck import Card_Deck
 def allCardsLowerThan(card_grid: list[list[Card]], max_value):
     for row in card_grid:
         for card in row:
-            if card.value >= max_value:
+            if card.value >= max_value and card.is_open:
                 return False
     return True
 
@@ -15,7 +15,8 @@ def findHighestCardInGrid(card_grid: list[list[Card]]):
     for row_index in range(3):
         for column_index in range(4):
             card = card_grid[row_index][column_index]
-            if card.value > highest_value:
+            if card.value > highest_value and card.is_open:
+                highest_value = card.value
                 card_cords = [row_index, column_index]
     return card_cords
 

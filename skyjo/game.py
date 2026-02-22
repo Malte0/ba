@@ -7,6 +7,9 @@ class Game:
     middle_card: Card
     card_deck: Card_Deck
     players: list[Player]
+    number_of_rounds: int = 1
+    results: dict[str, list[int]] = {}
+    verbose = False
 
     def __init__(self, players: list[Player], card_deck: Card_Deck):
         self.players = players
@@ -27,7 +30,12 @@ class Game:
                 most_open_points = open_points
                 index_of_player_with_most_points = i
         
-        self.play(index_of_player_with_most_points)
+        for _ in range(self.number_of_rounds):
+            self.play(index_of_player_with_most_points)
+            self.save_results()
+            self.reset_game()
+        self.print_results()
+        
         
     def play(self, index_of_player_with_most_points):
         last_index_to_play = 10000
@@ -39,20 +47,51 @@ class Game:
             # Draw or take middle card
             # if draw, take card or open card
 
+            self.middle_card.open_up() # just to make sure it's open
+            if self.verbose:
+                print(f"{player_to_move.name}")
+                print(f"Middle {self.middle_card.value}")
+                print(player_to_move.print_grid())
             new_middle_card = player_to_move.makeMove(player_to_move, self.middle_card, self.card_deck)
+            if self.verbose:
+                print("After Move:")
+                print(player_to_move.print_grid())
+                print("==============================")
             self.middle_card = new_middle_card
 
             if player_to_move.has_finished() and not last_round:
                 last_index_to_play = current_player_index + len(self.players)-1
                 last_round = True
             current_player_index += 1
-        
-        self.print_results()
 
-    def print_results(self):
-        results = {}
+    def reset_game(self):
+        self.card_deck = Card_Deck()
+        for player in self.players:
+            player.card_grid = []
+            player.draw_grid(self.card_deck)
+        self.middle_card = Card(self.card_deck.draw_card())
+
+
+    def save_results(self):
         for player in self.players:
             player.open_all_cards()
             open_points = player.open_points()
-            results[player.name] = open_points
-        print(results)
+            if player.name not in self.results:
+                self.results[player.name] = []
+            self.results[player.name].append(open_points)
+            if self.verbose:
+                print(f"{player.name}: {open_points}")
+    
+    def print_results(self):
+        for player_name in self.results:
+            points = sum(self.results[player_name]) // len(self.results[player_name])
+            print(f"{player_name}: {points}")
+        
+        lowest_score = 10000
+        lowest_player = ""
+        for player_name in self.results:
+            for score in self.results[player_name]:
+                if score < lowest_score:
+                    lowest_score = score
+                    lowest_player = player_name
+        print(f"Lowest Score: {lowest_score} by {lowest_player}")
