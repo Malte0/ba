@@ -1,14 +1,22 @@
 import random
 from solver import LookUpTable
+import time
 
 class Player:
+    thinking_steps: int
+    lut: LookUpTable
+    thinking_times: list[int] = []
+
     def __init__(self, thinking_steps=0):
         self.thinking_steps = thinking_steps
+        self.thinking_times = []
         self.lut = LookUpTable()
     
     def plan_ahead(self, N, T):
+        self.time_start = time.time()
         self.lut.populate(N, T, self.thinking_steps)
-        # self.lut.print()
+        self.time_end = time.time()
+        self.thinking_times.append(self.time_end - self.time_start)
 
     def random_move(self, Ti):
         return random.choice(Ti)
