@@ -7,7 +7,7 @@ N = 100
 K = 8
 NUMBER_OF_GAMES = 100
 NUMBER_OF_PLAYERS = 4
-def player_thinking_steps(player_index): 
+def player_thinking_steps(player_index):
     return 80+player_index*7
 VERBOSE = False
 
@@ -69,7 +69,10 @@ def plot_results(results, games_played, thinking_times: dict[int, list[int]]):
         print(f"Player {key} won {player_win_percentage}% games, thinking {plot_z_scaled[key]}")
 
     # print(plot_z_normed)
-    plt.plot(plot_x, plot_y, plot_x, plot_z_scaled.values())
+    plot_x_sorted = sorted(plot_x)
+    plot_y_sorted = [plot_y[plot_x.index(x)] for x in plot_x_sorted]
+    plot_z_scaled_sorted = [plot_z_scaled[x] for x in plot_x_sorted]
+    plt.plot(plot_x_sorted, plot_y_sorted, plot_x_sorted, plot_z_scaled_sorted)
     plt.show()
 
 if __name__ == "__main__":
