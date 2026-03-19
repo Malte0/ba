@@ -3,6 +3,7 @@ import { computed } from 'vue';
 
 const props = defineProps<{
     index: number,
+    width: number
 }>()
 
 // offset for the background image
@@ -18,7 +19,7 @@ const backgroundOffsetX = computed(() => {
 </script>
 
 <template>
-    <div :style="{ backgroundPositionX: backgroundOffsetX, backgroundPositionY: backgroundOffsetY }"
+    <div :style="{ backgroundPositionX: backgroundOffsetX, backgroundPositionY: backgroundOffsetY, scale: `${width / 300}` }"
         class="region-card">
     </div>
 </template>

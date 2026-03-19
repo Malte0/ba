@@ -3,8 +3,7 @@ import type { REGION_CARD } from "../../types";
 const card: REGION_CARD = {
     index: 1,
     color: "red",
-    symbols: ["Schimaere", "Stein"],
-    points: 0,
+    symbols: ["Schimaere", "Stein"]
 } 
 
 export default card;

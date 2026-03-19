@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import RegionCard from '../components/regionCard.vue';
 import { regions } from '../cards/regions/regions';
 
 const MIN_CARD_INDEX = 1;
