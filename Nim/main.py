@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 N = 100
 K = 8
-NUMBER_OF_GAMES = 500
+NUMBER_OF_GAMES = 100
 NUMBER_OF_PLAYERS = 25
 def player_thinking_steps(player_index):
     return 76+player_index
@@ -32,6 +32,7 @@ def play_tournament():
     results = {} # dict of how may games players have won
     games_played = {} # dict of how many games players have played
     for i in range(len(players)):
+        print(f"Running at step {i} of {len(players)}")
         for j in range(i+1, len(players)):
             for _ in range(NUMBER_OF_GAMES):
                 games_played[players[i].thinking_steps] = games_played.get(players[i].thinking_steps, 0)+1
@@ -72,10 +73,10 @@ def plot_results(results, games_played, thinking_times: dict[int, list[int]]):
     thinking_times = get_planning_steps()
     plot_x = [key for key, value in results.items()]
     plot_z_normed, plot_z_scaled  = thinking_norm(thinking_times)
-    # print(plot_z_normed)
-    # print(plot_z_scaled)
-    plot_y = [round((value / games_played[key]) * 100, 2) / plot_z_normed[key] for key, value in results.items()]
-    # plot_y = [round((value / games_played[key]) * 100, 2) for key, value in results.items()]
+    # considering computational costs
+    # plot_y = [round((value / games_played[key]) * 100, 2) / plot_z_normed[key] for key, value in results.items()]
+    # ignoring all costs
+    plot_y = [round((value / games_played[key]) * 100, 2) for key, value in results.items()]
     for key, value in results.items():
         player_win_percentage = round((value / games_played[key]) * 100, 2)
         print(f"Player {key} won {player_win_percentage}% games, thinking {plot_z_scaled[key]}")
