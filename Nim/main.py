@@ -5,11 +5,19 @@ import matplotlib.pyplot as plt
 
 N = 100
 K = 8
-NUMBER_OF_GAMES = 100
-NUMBER_OF_PLAYERS = 4
+NUMBER_OF_GAMES = 500
+NUMBER_OF_PLAYERS = 25
 def player_thinking_steps(player_index):
-    return 80+player_index*7
+    return 76+player_index
 VERBOSE = False
+
+def get_planning_steps():
+    players: list[Player] = create_players(30, lambda a : 74+a)
+    T = create_T(N, K)
+    planning_steps: dict[int, list[int]] = {}
+    for player in players:
+        planning_steps[player.thinking_steps] = [player.plan_ahead(N, T)]
+    return planning_steps
 
 def play_round(player1: Player, player2: Player, results):
     T = create_T(N, K)
@@ -29,6 +37,7 @@ def play_tournament():
                 games_played[players[i].thinking_steps] = games_played.get(players[i].thinking_steps, 0)+1
                 games_played[players[j].thinking_steps] = games_played.get(players[j].thinking_steps, 0)+1
                 results = play_round(players[i], players[j], results)
+    # thinking_times = {player.thinking_steps: player.thinking_times for player in players}
     thinking_times = {player.thinking_steps: player.thinking_times for player in players}
     return results, games_played, thinking_times
 
@@ -54,14 +63,17 @@ def thinking_norm(thinking_times: dict[int, list[int]]):
     vals = {key: readable(sum(t_times) / len(t_times)) for key, t_times in thinking_times.items()}
     lowest = min(vals.values())
     normed_vals = {key: (thinking_time / lowest) for key, thinking_time in vals.items()}
-    scaled_vals = {key: thinking_time * 20 for key, thinking_time in normed_vals.items()}
+    scaled_vals = {key: round(thinking_time * 20, 1) for key, thinking_time in normed_vals.items()}
     return normed_vals, scaled_vals
 
 def plot_results(results, games_played, thinking_times: dict[int, list[int]]):
     plt.xlabel('Thinking steps')
     plt.ylabel('Winrate %')
+    thinking_times = get_planning_steps()
     plot_x = [key for key, value in results.items()]
     plot_z_normed, plot_z_scaled  = thinking_norm(thinking_times)
+    # print(plot_z_normed)
+    # print(plot_z_scaled)
     plot_y = [round((value / games_played[key]) * 100, 2) / plot_z_normed[key] for key, value in results.items()]
     # plot_y = [round((value / games_played[key]) * 100, 2) for key, value in results.items()]
     for key, value in results.items():
@@ -75,7 +87,9 @@ def plot_results(results, games_played, thinking_times: dict[int, list[int]]):
     plt.plot(plot_x_sorted, plot_y_sorted, plot_x_sorted, plot_z_scaled_sorted)
     plt.show()
 
-if __name__ == "__main__":
-    X = range(10)
+def main():
     results, games_played, thinking_times = play_tournament()
     plot_results(results, games_played, thinking_times)
+
+if __name__ == "__main__":
+    main()

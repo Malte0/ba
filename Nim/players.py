@@ -14,9 +14,10 @@ class Player:
     
     def plan_ahead(self, N, T):
         self.time_start = time.time()
-        self.lut.populate(N, T, self.thinking_steps)
+        planning_steps = self.lut.populate(N, T, self.thinking_steps)
         self.time_end = time.time()
         self.thinking_times.append(self.time_end - self.time_start)
+        return planning_steps
 
     def random_move(self, Ti):
         return random.choice(Ti)

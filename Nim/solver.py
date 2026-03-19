@@ -17,8 +17,10 @@ class LookUpTable:
     
     def populate(self, N, T, max_steps):
         self.clear()
+        self.creation_steps = 0
         if max_steps > 0:
             self.recursive_iteration(N, T, max_steps)
+        return self.creation_steps
 
     # def get_possible_ns(self, N, K):
     def get_possible_ns(self, N):
@@ -44,6 +46,7 @@ class LookUpTable:
             if N-step > max_steps:
                 break
             for ns in possible_ns[step]:
+                self.creation_steps += 2
                 Ts0 = T[step][0]
                 Ts1 = T[step][1]
                 isWinning = ns+Ts0 >= N or ns+Ts1 >= N
