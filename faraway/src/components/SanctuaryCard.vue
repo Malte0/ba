@@ -30,7 +30,7 @@ const backgroundOffsetX = computed(() => {
     user-select: none;
     height: 291px;
     width: 189px;
-    aspect-ratio: 1.5396825; 
+    aspect-ratio: 0.6494845;
     border-radius: 1.25rem;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
