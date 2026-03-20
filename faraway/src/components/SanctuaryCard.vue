@@ -19,7 +19,7 @@ const backgroundOffsetX = computed(() => {
 </script>
 
 <template>
-    <div :style="{ backgroundPositionX: backgroundOffsetX, backgroundPositionY: backgroundOffsetY, scale: `${width / 200}` }"
+    <div :style="{ backgroundPositionX: backgroundOffsetX, backgroundPositionY: backgroundOffsetY, scale: `${width / 189}` }"
         class="sanctuary-card">
     </div>
 </template>
@@ -30,8 +30,8 @@ const backgroundOffsetX = computed(() => {
     user-select: none;
     height: 291px;
     width: 189px;
-    /* Does aspect-ration make sense here anymore? */
-    aspect-ratio: 1; 
+    aspect-ratio: 1.5396825; 
     border-radius: 1.25rem;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
 </style>

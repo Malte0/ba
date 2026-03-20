@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { CardDeck, countMaps, getCardPoints } from '../cards/cards';
 import RegionCard from '../components/RegionCard.vue';
 import SanctuaryCard from '../components/SanctuaryCard.vue';
@@ -8,8 +8,10 @@ import { sanctuaries } from '../cards/sanctuaries/sanctuaries';
 import type { CARD } from '../types';
 
 const cardDeck = new CardDeck()
-const randomRegions = ref<number[]>([cardDeck.drawRegion(), cardDeck.drawRegion(), cardDeck.drawRegion()]);
-const chosenRegions = ref<number[]>([]);
+const publicRegions = ref<number[]>([cardDeck.drawRegion(), cardDeck.drawRegion(), cardDeck.drawRegion()]);
+const handCards = ref<number[]>([cardDeck.drawRegion(), cardDeck.drawRegion(), cardDeck.drawRegion()])
+
+const chosenRegions = ref<number[]>([5, 6, 7, 8]);
 const pointsRecieved = ref<number[]>([]);
 const pointsFromSanctuaries = ref<number>(0);
 const openSanctuaryOverlay = ref<boolean>(false);
@@ -17,10 +19,10 @@ const drawnSanctuaries = ref<number[]>([]);
 const chosenSanctuaries = ref<number[]>([]);
 const hideSanctuaryOverlay = ref<boolean>(false);
 
-// refreshes the cards the player can choose from
+// refreshes the cards the public cards
 function refreshCardChoice() {
-    for (let i = 0; i < randomRegions.value.length; i++) {
-        randomRegions.value[i] = cardDeck.drawRegion();
+    for (let i = 0; i < publicRegions.value.length; i++) {
+        publicRegions.value[i] = cardDeck.drawRegion();
     }
 }
 
@@ -44,8 +46,14 @@ function calculateScore(regionsToEvaluate: number[], sanctuariesToEvaluate: numb
 }
 
 // player chooses a card
-function chooseCard(cardIndex: number) {
-    console.log(`You have chosen card ${cardIndex}`)
+function takePublicCard(cardIndex: number) {
+    console.log(`You have chosen public card ${cardIndex}`)
+    handCards.value.push(cardIndex);
+    refreshCardChoice()
+}
+
+function playHandCard(cardIndex: number) {
+    console.log(`You have played hand card ${cardIndex}`)
     const previousCardIndex = chosenRegions.value[chosenRegions.value.length - 1]
     chosenRegions.value.push(cardIndex)
     if (chosenRegions.value.length > 1 && cardIndex > previousCardIndex) {
@@ -54,11 +62,13 @@ function chooseCard(cardIndex: number) {
     }
     if (chosenRegions.value.length == 8) {
         console.log("GAME OVER!!!!");
-        randomRegions.value = [];
+        publicRegions.value = [];
         // use copy of array, just to be sure
         calculateScore(chosenRegions.value.slice(), chosenSanctuaries.value.slice());
+        return;
     }
-    refreshCardChoice()
+    // remove card from hand
+    handCards.value = handCards.value.filter(card => card !== cardIndex);
 }
 
 function drawSanctuaries() {
@@ -81,37 +91,74 @@ function toggleSanctuarySelectionVisibiltiy(event: PointerEvent) {
     console.log(hideSanctuaryOverlay.value)
 }
 
-const chosenCardSize = 240;
+const cardSize = computed(() => chosenRegions.value.length < 5 ? window.innerHeight / 5 : window.innerHeight / 5)
 </script>
 
 <template>
     <div class="game-container">
-        <div class="game-cards-to-choose">
-            <div v-for="cardIndex in randomRegions" @click="() => chooseCard(cardIndex)"
-                class="game-card-region-wrapper"
-                :style="{ width: `${chosenCardSize}px`, height: `${chosenCardSize}px` }">
-                <RegionCard :width="chosenCardSize" :index="cardIndex"></RegionCard>
+        <!-- TODO: put points beneath the cards and total points below all the cards -->
+        <div class="game-final-scores">
+            <div v-for="points, index in pointsRecieved" class="game-points">Card {{ 8 - index }}: {{ points }}</div>
+            <div v-if="pointsRecieved.length > 0" class="game-points">Sanctuaries: {{ pointsFromSanctuaries }}</div>
+            <dpiv v-if="pointsRecieved.length > 0">Total: {{pointsRecieved.reduce((prev, curr) => prev + curr,
+                0) + pointsFromSanctuaries}}</dpiv>
+        </div>
+        <div v-if="publicRegions.length > 0" class="game-cards-to-choose">
+            <div class="game-cards-hint">
+                <h1>Public</h1>
+                <img src="/img/public_cards.svg" alt="public">
+            </div>
+            <div v-for="cardIndex in publicRegions" @click="() => takePublicCard(cardIndex)"
+                class="game-card-region-wrapper" :class="{ 'game-card-pickable': handCards.length < 3 }"
+                :style="{ width: `${cardSize}px`, height: `${cardSize}px` }">
+                <RegionCard :width="cardSize" :index="cardIndex"></RegionCard>
+            </div>
+            <div class="game-cards-hint">
+            </div>
+        </div>
+        <div style="height: 0.5rem; width: 100%; background-color: #e3e3e3;"></div>
+        <div class="game-cards-in-hand">
+            <div class="game-cards-hint">
+                <h1>Hand</h1>
+                <img src="/img/hand_cards.svg" alt="public">
+            </div>
+            <div v-for="cardIndex in handCards" @click="() => playHandCard(cardIndex)" class="game-card-region-wrapper"
+                :class="{ 'game-card-pickable': handCards.length === 3 }"
+                :style="{ width: `${cardSize}px`, height: `${cardSize}px` }">
+                <RegionCard :width="cardSize" :index="cardIndex"></RegionCard>
+            </div>
+            <div class="game-cards-hint">
             </div>
         </div>
         <div class="game-cards-chosen">
-            <div v-for="cardIndex in chosenRegions" class="game-card-region-wrapper"
-                :style="{ width: `${chosenCardSize}px`, height: `${chosenCardSize}px` }">
-                <RegionCard :width="chosenCardSize" :index="cardIndex"></RegionCard>
+            <div class="game-cards-hint">
+                <h1>Explored</h1>
             </div>
-        </div>
-        <div class="game-cards-chosen">
-            <div v-for="cardIndex in chosenSanctuaries" class="game-sanctuary-card-wrapper">
-                <SanctuaryCard :width="189" :index="cardIndex"></SanctuaryCard>
+            <div class="game-region-cards-chosen">
+                <div v-for="cardIndex in chosenRegions" class="game-card-region-wrapper"
+                    :style="{ width: `${cardSize}px`, height: `${cardSize}px` }">
+                    <RegionCard :width="cardSize" :index="cardIndex"></RegionCard>
+                </div>
+            </div>
+            <div class="game-region-cards-chosen">
+
+                <div v-for="cardIndex in chosenSanctuaries" class="game-sanctuary-card-wrapper"
+                    :style="{ width: `${cardSize}px`, height: `${cardSize}px` }">
+                    <SanctuaryCard :width="cardSize" :index="cardIndex"></SanctuaryCard>
+                </div>
             </div>
         </div>
         <div v-if="openSanctuaryOverlay" class="game-sanctuary-overlay">
-            <div @click="() => hideSanctuaryOverlay = false" class="game-sanctuary-choice-wrapper" :class="{ 'game-sanctuary-choice-hidden': hideSanctuaryOverlay }">
+            <div @click="() => hideSanctuaryOverlay = false" class="game-sanctuary-choice-wrapper"
+                :class="{ 'game-sanctuary-choice-hidden': hideSanctuaryOverlay }">
                 <div v-for="cardIndex in drawnSanctuaries" @click="() => takeSanctuary(cardIndex)"
                     class="game-sanctuary-card-wrapper">
                     <SanctuaryCard :width="189" :index="cardIndex"></SanctuaryCard>
                 </div>
             </div>
             <div class="game-sanctuary-choice-visility">
+                <h1 v-if="!hideSanctuaryOverlay" style="color: #ffffff; position: relative; top: 2rem">Choose Sanctuary
+                </h1>
                 <div class="game-eye-button">
                     <img v-if="!hideSanctuaryOverlay" @click="toggleSanctuarySelectionVisibiltiy"
                         src="/img/visibility_off.svg" alt="-_-">
@@ -120,15 +167,53 @@ const chosenCardSize = 240;
                 </div>
             </div>
         </div>
-        <div>
-            <div v-for="points, index in pointsRecieved" class="game-points">Card {{ 8 - index }}: {{ points }}</div>
-            <div v-if="pointsRecieved.length > 0" class="game-points">Sanctuaries: {{ pointsFromSanctuaries }}</div>
-            <div v-if="pointsRecieved.length > 0">Total: {{pointsRecieved.reduce((prev, curr) => prev + curr, 0)}}</div>
-        </div>
     </div>
 </template>
 
 <style scoped>
+.game-points {
+    line-height: 1.25rem;
+}
+
+.game-sanctuary-card-wrapper {
+    margin: 0.5rem;
+}
+
+.game-cards-hint {
+    align-self: flex-start;
+    justify-self: flex-start;
+    height: 100%;
+    width: 16%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-weight: 500;
+    color: #e3e3e3;
+}
+
+.game-cards-hint>img {
+    height: 40%;
+}
+
+.game-card-region-wrapper {
+    cursor: default;
+    pointer-events: none;
+    margin: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-card-pickable {
+    cursor: pointer;
+    pointer-events: all;
+}
+
+.game-container {
+    height: 100vh;
+    background-color: #555555;
+}
+
 .game-eye-button {
     pointer-events: all;
     user-select: none;
@@ -174,7 +259,7 @@ const chosenCardSize = 240;
     left: 0;
     width: 100%;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.171);
+    background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(5px);
     display: flex;
     justify-content: center;
@@ -189,29 +274,42 @@ const chosenCardSize = 240;
     opacity: 0;
 }
 
-.game-cards-to-choose {
+.game-cards-in-hand {
+    height: 20%;
+    min-height: fit-content;
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: center;
     padding: 1rem;
+    background-color: #414141;
 }
 
-.game-cards-to-choose>div {
+.game-cards-to-choose {
+    height: 20%;
+    min-height: fit-content;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 1rem;
+    background-color: #2F2F2F;
+}
+
+.game-cards-in-hand>div {
     cursor: pointer;
 }
 
 .game-cards-chosen {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
-    padding: 1rem;
-    flex-wrap: wrap;
+    justify-content: center;
+    background-color: #555555;
 }
 
-.game-card-region-wrapper {
-    margin: 0.5rem;
+.game-region-cards-chosen {
     display: flex;
+    flex-direction: row;
     justify-content: center;
-    align-items: center;
+    padding: 1rem;
+    flex-wrap: wrap;
 }
 </style>
