@@ -1,4 +1,4 @@
-import type { COLOR, REGION_CARD, SYMBOL } from "../types";
+import type { COLOR, CARD, SYMBOL } from "../types";
 
 export class CardDeck {
   cardsLeft = Array.from({ length: 68 }, (_e, i) => i + 1);
@@ -11,7 +11,7 @@ export class CardDeck {
   }
 }
 
-function countSymbol(symbolToCount: SYMBOL, openRegions: REGION_CARD[]) {
+function countSymbol(symbolToCount: SYMBOL, openRegions: CARD[]) {
   let numberOfStein = 0;
   for (const openRegion of openRegions) {
     numberOfStein += openRegion.symbols ? openRegion.symbols.filter((symbol) => symbol === symbolToCount).length : 0;
@@ -19,7 +19,7 @@ function countSymbol(symbolToCount: SYMBOL, openRegions: REGION_CARD[]) {
   return numberOfStein;
 }
 
-function countColorSets(openRegions: REGION_CARD[]) {
+function countColorSets(openCards: CARD[]) {
   const colorCount: { [key: string]: number } = {
     red: 0,
     blue: 0,
@@ -27,14 +27,14 @@ function countColorSets(openRegions: REGION_CARD[]) {
     green: 0,
   };
 
-  for (const openRegion of openRegions) {
-    colorCount[openRegion.color] += 1;
+  for (const openCard of openCards) {
+    colorCount[openCard.color] += 1;
   }
 
   return Math.min(...Object.values(colorCount));
 }
 
-function countColors(colorsToCount: COLOR[], openRegions: REGION_CARD[]) {
+function countColors(colorsToCount: COLOR[], openRegions: CARD[]) {
   let colorCount = 0;
   for (const openRegion of openRegions) {
     colorCount += colorsToCount.includes(openRegion.color) ? 1 : 0;
@@ -42,7 +42,7 @@ function countColors(colorsToCount: COLOR[], openRegions: REGION_CARD[]) {
   return colorCount;
 }
 
-function isConditionFullfilled(openRegions: REGION_CARD[], condition: SYMBOL[]) {
+function isConditionFullfilled(openRegions: CARD[], condition: SYMBOL[]) {
   // count how many times a SYMBOL has to occur
   const symbolsInCondition: { [key: string]: number } = {};
   for (const symbol of condition) {
@@ -58,7 +58,7 @@ function isConditionFullfilled(openRegions: REGION_CARD[], condition: SYMBOL[]) 
   return true;
 }
 
-export function getCardPoints(openRegions: REGION_CARD[], regionToGetPointsOf: REGION_CARD) {
+export function getCardPoints(openRegions: CARD[], regionToGetPointsOf: CARD) {
   //, openSanctuaries
   if (!regionToGetPointsOf.points) {
     return 0;

@@ -1,4 +1,4 @@
-import type { REGION_CARD } from "../../types";
+import type { CARD } from "../../types";
 import region1 from './1';
 import region2 from './2';
 import region3 from './3';
@@ -68,7 +68,7 @@ import region66 from './66';
 import region67 from './67';
 import region68 from './68';
 
-export const regions: { [key: number]: REGION_CARD } = {};
+export const regions: { [key: number]: CARD } = {};
 
 regions[1] = region1;
 regions[2] = region2;

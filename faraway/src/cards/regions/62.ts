@@ -1,6 +1,6 @@
-﻿import type { REGION_CARD } from "../../types";
+﻿import type { CARD } from "../../types";
 
-const card: REGION_CARD = {
+const card: CARD = {
     index: 62,
     color: 'yellow',
     map: true,

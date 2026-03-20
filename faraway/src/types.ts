@@ -1,9 +1,9 @@
 
 export type SYMBOL = "Distel" | "Stein" | "Schimaere"
-export type COLOR = "red" | "blue" | "yellow" | "green"
+export type COLOR = "red" | "blue" | "yellow" | "green" | "none"
 type MULTIPLIER = SYMBOL | COLOR[] | "color-set" | "map" | "night"
 
-export type REGION_CARD = {
+export type CARD = {
     index: number,
     color: COLOR,
     night?: boolean,

@@ -25,9 +25,9 @@ function onIndexInputChange(event: Event) {
 
 <template>
     <div class="card-inspector">
-        <div class="card-display">
+        <div class="region-display">
             <RegionCard :index="currentCardIndex"></RegionCard>
-            <div class="card-info">
+            <div class="region-info">
                 <h2>Info:</h2>
                 <p>Color: {{ regions[computedIndex].color }}</p>
                 <p>{{ regions[computedIndex].night ? "Night" : "" }}</p>
@@ -38,7 +38,26 @@ function onIndexInputChange(event: Event) {
                 <p>Multiplier: {{ regions[computedIndex].multiplier }}</p>
             </div>
         </div>
-        <div class="card-navigation">
+        <div class="region-navigation">
+            <button :class="{'button-inactive': currentCardIndex == MIN_CARD_INDEX }" class="card-navigation-button" @click="() => currentCardIndex--">prev</button>
+            <input type="number" name="indexInput" id="indexInput" :value="computedIndex"
+                @change="onIndexInputChange">
+            <button :class="{'button-inactive': currentCardIndex == MAX_CARD_INDEX }" class="card-navigation-button" @click="() => currentCardIndex++">next</button>
+        </div>
+        <div class="sanctuary-display">
+            <RegionCard :index="currentCardIndex"></RegionCard>
+            <div class="region-info">
+                <h2>Info:</h2>
+                <p>Color: {{ regions[computedIndex].color }}</p>
+                <p>{{ regions[computedIndex].night ? "Night" : "" }}</p>
+                <p>{{ regions[computedIndex].map ? "Map" : "" }}</p>
+                <p>Symbols: {{ regions[computedIndex].symbols?.join(", ") }}</p>
+                <p>Condition: {{ regions[computedIndex].condition?.join(", ") }}</p>
+                <p>Points: {{ regions[computedIndex].points }}</p>
+                <p>Multiplier: {{ regions[computedIndex].multiplier }}</p>
+            </div>
+        </div>
+        <div class="region-navigation">
             <button :class="{'button-inactive': currentCardIndex == MIN_CARD_INDEX }" class="card-navigation-button" @click="() => currentCardIndex--">prev</button>
             <input type="number" name="indexInput" id="indexInput" :value="computedIndex"
                 @change="onIndexInputChange">

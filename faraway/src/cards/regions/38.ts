@@ -1,7 +1,7 @@
-import type { REGION_CARD } from "../../types";
+import type { CARD } from "../../types";
 
 
-const card: REGION_CARD = {
+const card: CARD = {
     index: 38,
     color: "green",
     night: true,
