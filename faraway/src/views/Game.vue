@@ -18,6 +18,7 @@ const openSanctuaryOverlay = ref<boolean>(false);
 const drawnSanctuaries = ref<number[]>([]);
 const chosenSanctuaries = ref<number[]>([]);
 const hideSanctuaryOverlay = ref<boolean>(false);
+const gameOver = ref<boolean>(false);
 
 // refreshes the cards the public cards
 function refreshCardChoice() {
@@ -54,6 +55,7 @@ function takePublicCard(cardIndex: number) {
 
 function endGame() {
     console.log("GAME OVER!!!!");
+    gameOver.value = true;
     publicRegions.value = [];
     // use copy of array, just to be sure
     calculateScore(chosenRegions.value.slice(), chosenSanctuaries.value.slice());
@@ -64,10 +66,11 @@ function playHandCard(cardIndex: number) {
     const previousCardIndex = chosenRegions.value[chosenRegions.value.length - 1]
     chosenRegions.value.push(cardIndex)
     if (chosenRegions.value.length > 1 && cardIndex > previousCardIndex) {
+        console.log("draw sanctuary")
         openSanctuaryOverlay.value = true;
         drawSanctuaries();
     }
-    if (chosenRegions.value.length == 8) {
+    if (chosenRegions.value.length == 8 && !openSanctuaryOverlay.value) {
         endGame();
         return;
     }
@@ -106,7 +109,7 @@ const cardSize = computed(() => chosenRegions.value.length < 5 ? window.innerHei
     <div class="game-container">
         <!-- TODO: put points beneath the cards and total points below all the cards -->
         <div class="game-final-scores">
-            <div v-if="chosenRegions.length === 8">Total Points: {{Object.values(pointsRecieved).reduce((prev, curr) =>
+            <div v-if="gameOver">Total Points: {{Object.values(pointsRecieved).reduce((prev, curr) =>
                 prev + curr,
                 0) + pointsFromSanctuaries}}</div>
         </div>
@@ -118,7 +121,7 @@ const cardSize = computed(() => chosenRegions.value.length < 5 ? window.innerHei
             </div>
             <div class="game-card-wrapper">
                 <div v-for="cardIndex in publicRegions" @click="() => takePublicCard(cardIndex)"
-                    class="game-card-region-wrapper" :class="{ 'game-card-pickable': handCards.length < 3 }"
+                    class="game-card-region-wrapper" :class="{ 'game-card-pickable': handCards.length < 3 && !gameOver && !openSanctuaryOverlay }"
                     :style="{ width: `${cardSize}px`, height: `${cardSize}px` }">
                     <RegionCard :width="cardSize" :index="cardIndex"></RegionCard>
                 </div>
@@ -128,7 +131,6 @@ const cardSize = computed(() => chosenRegions.value.length < 5 ? window.innerHei
                 <h1>Public</h1>
             </div>
         </div>
-        <div style="height: 0.25rem; width: 100%; background-color: #e3e3e3;"></div>
         <div class="game-cards-in-hand">
             <div class="game-hint">
                 <h1>Hand</h1>
@@ -136,7 +138,7 @@ const cardSize = computed(() => chosenRegions.value.length < 5 ? window.innerHei
             </div>
             <div class="game-card-wrapper">
                 <div v-for="cardIndex in handCards" @click="() => playHandCard(cardIndex)"
-                    class="game-card-region-wrapper" :class="{ 'game-card-pickable': handCards.length === 3 }"
+                    class="game-card-region-wrapper" :class="{ 'game-card-pickable': handCards.length === 3 && !gameOver && !openSanctuaryOverlay }"
                     :style="{ width: `${cardSize}px`, height: `${cardSize}px` }">
                     <RegionCard :width="cardSize" :index="cardIndex"></RegionCard>
                 </div>
@@ -148,6 +150,7 @@ const cardSize = computed(() => chosenRegions.value.length < 5 ? window.innerHei
         <div class="game-cards-chosen">
             <div class="game-hint">
                 <h1>Explored</h1>
+                <h2>{{ chosenRegions.length }} / 8</h2>
             </div>
             <div class="game-region-cards-chosen" :style="{ width: `calc(4px * (${cardSize} + 0.5rem))` }">
                 <div v-for="cardIndex in chosenRegions">
@@ -155,7 +158,7 @@ const cardSize = computed(() => chosenRegions.value.length < 5 ? window.innerHei
                         <RegionCard :width="cardSize" :index="cardIndex"></RegionCard>
                     </div>
                     <!-- TODO: Life Punkteanzeige / not fullfilled -->
-                    <p v-if="chosenRegions.length === 8">points: {{ pointsRecieved[cardIndex] }}</p>
+                    <p v-if="gameOver">points: {{ pointsRecieved[cardIndex] }}</p>
                 </div>
             </div>
             <div class="game-region-cards-chosen">
@@ -163,7 +166,7 @@ const cardSize = computed(() => chosenRegions.value.length < 5 ? window.innerHei
                     :style="{ width: `${cardSize * (3 / 5)}px`, height: `${cardSize}px` }">
                     <SanctuaryCard :width="cardSize * (3 / 5)" :index="cardIndex"></SanctuaryCard>
                 </div>
-                <div v-if="chosenRegions.length === 8" class="game-points">Sanctuaries: {{ pointsFromSanctuaries }}
+                <div v-if="gameOver" class="game-points">Sanctuaries: {{ pointsFromSanctuaries }}
                 </div>
             </div>
         </div>
@@ -230,6 +233,7 @@ const cardSize = computed(() => chosenRegions.value.length < 5 ? window.innerHei
 }
 
 .game-card-region-wrapper {
+    border-radius: 0.67rem;
     cursor: default;
     pointer-events: none;
     margin: 0.5rem;
@@ -242,11 +246,15 @@ const cardSize = computed(() => chosenRegions.value.length < 5 ? window.innerHei
 .game-card-pickable {
     cursor: pointer;
     pointer-events: all;
+    box-shadow:
+        0 0 0 2px white,
+        0 0 6px 2px rgba(255, 255, 255, 0.6);
 }
 
 .game-container {
     height: 100vh;
     background-color: #555555;
+    overflow: hidden;
 }
 
 .game-eye-button {
@@ -307,6 +315,8 @@ const cardSize = computed(() => chosenRegions.value.length < 5 ? window.innerHei
 
 .game-sanctuary-choice-hidden {
     opacity: 0;
+    pointer-events: none;
+    cursor: default;
 }
 
 .game-cards-in-hand {
@@ -340,7 +350,6 @@ const cardSize = computed(() => chosenRegions.value.length < 5 ? window.innerHei
 
 .game-final-scores {
     color: white;
-    padding: 1rem;
     font-size: 2rem;
     min-height: fit-content;
     line-height: 2.5rem;
