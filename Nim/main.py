@@ -6,13 +6,13 @@ import matplotlib.pyplot as plt
 N = 100
 K = 8
 NUMBER_OF_GAMES = 100
-NUMBER_OF_PLAYERS = 25
+NUMBER_OF_PLAYERS = 7
 def player_thinking_steps(player_index):
-    return 76+player_index
+    return 60+player_index*7
 VERBOSE = False
 
 def get_planning_steps():
-    players: list[Player] = create_players(30, lambda a : 74+a)
+    players: list[Player] = create_players(50, lambda a : 60+a)
     T = create_T(N, K)
     planning_steps: dict[int, list[int]] = {}
     for player in players:
@@ -71,6 +71,7 @@ def plot_results(results, games_played, thinking_times: dict[int, list[int]]):
     plt.xlabel('Thinking steps')
     plt.ylabel('Winrate %')
     thinking_times = get_planning_steps()
+    print(thinking_times)
     plot_x = [key for key, value in results.items()]
     plot_z_normed, plot_z_scaled  = thinking_norm(thinking_times)
     # considering computational costs
@@ -89,6 +90,9 @@ def plot_results(results, games_played, thinking_times: dict[int, list[int]]):
     plt.show()
 
 def main():
+    thinking_times = get_planning_steps()
+    print(thinking_times)
+    return
     results, games_played, thinking_times = play_tournament()
     plot_results(results, games_played, thinking_times)
 
