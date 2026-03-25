@@ -1,10 +1,9 @@
-﻿import type { REGION_CARD } from "../../types";
+﻿import type { CARD } from "../../types";
 
-const card: REGION_CARD = {
+const card: CARD = {
     index: 2,
     color: "blue",
     symbols: ["Stein", "Stein"],
-    points: 0,
 } 
 
 export default card;

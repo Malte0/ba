@@ -1,16 +1,15 @@
 
-type SYMBOL = "Distel" | "Stein" | "Schimaere"
-type COLOR = "red" | "blue" | "yellow" | "green"
+export type SYMBOL = "Distel" | "Stein" | "Schimaere"
+export type COLOR = "red" | "blue" | "yellow" | "green" | "none"
 type MULTIPLIER = SYMBOL | COLOR[] | "color-set" | "map" | "night"
 
-export type REGION_CARD = {
+export type CARD = {
     index: number,
     color: COLOR,
     night?: boolean,
     map?: boolean,
     symbols?: SYMBOL[],
     condition?: SYMBOL[],
-    // points X number of MULTPLIER present, if MULTIPLIER is undefined multiply by 1
     points?: number,
     multiplier?: MULTIPLIER
 }
