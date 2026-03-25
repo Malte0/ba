@@ -7,7 +7,7 @@ K = 8
 NUMBER_OF_GAMES = 100
 NUMBER_OF_PLAYERS = 2
 def player_thinking_steps(player_index):
-    return 75+player_index*25
+    return N-(N//(K//2))+player_index*(N//(K//2))
 VERBOSE = False
 
 def get_planning_steps():
