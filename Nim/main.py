@@ -6,9 +6,9 @@ import matplotlib.pyplot as plt
 N = 100
 K = 8
 NUMBER_OF_GAMES = 100
-NUMBER_OF_PLAYERS = 7
+NUMBER_OF_PLAYERS = 2
 def player_thinking_steps(player_index):
-    return 60+player_index*7
+    return 0+player_index*100
 VERBOSE = False
 
 def get_planning_steps():
@@ -75,9 +75,9 @@ def plot_results(results, games_played, thinking_times: dict[int, list[int]]):
     plot_x = [key for key, value in results.items()]
     plot_z_normed, plot_z_scaled  = thinking_norm(thinking_times)
     # considering computational costs
-    # plot_y = [round((value / games_played[key]) * 100, 2) / plot_z_normed[key] for key, value in results.items()]
+    plot_y = [round((value / games_played[key]) * 100, 2) / plot_z_normed[key] for key, value in results.items()]
     # ignoring all costs
-    plot_y = [round((value / games_played[key]) * 100, 2) for key, value in results.items()]
+    # plot_y = [round((value / games_played[key]) * 100, 2) for key, value in results.items()]
     for key, value in results.items():
         player_win_percentage = round((value / games_played[key]) * 100, 2)
         print(f"Player {key} won {player_win_percentage}% games, thinking {plot_z_scaled[key]}")

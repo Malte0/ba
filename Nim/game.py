@@ -1,9 +1,13 @@
 import random
 
-# In each of the N steps, we add at least one, so after N steps we reach at least N
-
-def create_T(N, K):
-    # T = [(random.randint(1, K), random.randint(1, K)) for _ in range(N)]
-    T = [(random.randint(1, K), random.randint(1, K), random.randint(1, K)) for _ in range(N)]
-    # T = [(random.randint(1, K//1), random.randint(K//3, K//), random.randint(K//2, K)) for _ in range(N)]
+def create_T(N, K, numberOfOptions=2, isKDefivided=False):
+    T = []
+    for _ in range(N):
+        options = []
+        for i in range(numberOfOptions):
+            if isKDefivided:
+                options.append(random.randint(1+i*(K//numberOfOptions), (i+1)*(K//numberOfOptions)))
+            else:
+                options.append(random.randint(1, K))
+        T.append(tuple(options))
     return T
