@@ -1,6 +1,4 @@
 
-from game import create_T
-
 class LookUpTable:
     def __init__(self):
         self.lut = {}
@@ -52,17 +50,3 @@ class LookUpTable:
                 isWinning = ns+Ts0 >= N or ns+Ts1 >= N
                 self.lut[(step, ns, True)] = 1 if isWinning else max([self.lut[(step+1,  ns+Ts0, False)], self.lut[(step+1, ns+Ts1, False)]])
                 self.lut[(step, ns, False)] = 0 if isWinning else min([self.lut[(step+1, ns+Ts0, True)], self.lut[(step+1, ns+Ts1, True)]])
-
-
-def main():
-    N = 100
-    K = 8
-    MAX_STEPS = 4
-    T = create_T(N, K)
-    lut = LookUpTable()
-    # print(lut.get_possible_ns(N))
-    lut.populate(N, T, MAX_STEPS)
-    lut.print()
-
-if __name__ == "__main__":
-    main()
