@@ -44,9 +44,21 @@ class LookUpTable:
             if N-step > max_steps:
                 break
             for ns in possible_ns[step]:
-                self.creation_steps += 2
-                Ts0 = T[step][0]
-                Ts1 = T[step][1]
-                isWinning = ns+Ts0 >= N or ns+Ts1 >= N
-                self.lut[(step, ns, True)] = 1 if isWinning else max([self.lut[(step+1,  ns+Ts0, False)], self.lut[(step+1, ns+Ts1, False)]])
-                self.lut[(step, ns, False)] = 0 if isWinning else min([self.lut[(step+1, ns+Ts0, True)], self.lut[(step+1, ns+Ts1, True)]])
+                moves = T[step]
+                self.creation_steps += len(moves)
+
+                # My turn: I can pick a move that maximizes my winning chance.
+                can_finish_now = any(ns + move >= N for move in moves)
+                if can_finish_now:
+                    self.lut[(step, ns, True)] = 1
+                else:
+                    next_values = [self.lut.get((step + 1, ns + move, False), 0) for move in moves]
+                    self.lut[(step, ns, True)] = max(next_values)
+
+                # Opponent turn: opponent picks a move that minimizes my winning chance.
+                opponent_can_finish_now = any(ns + move >= N for move in moves)
+                if opponent_can_finish_now:
+                    self.lut[(step, ns, False)] = 0
+                else:
+                    next_values = [self.lut.get((step + 1, ns + move, True), 1) for move in moves]
+                    self.lut[(step, ns, False)] = min(next_values)

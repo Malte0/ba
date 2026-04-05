@@ -8,7 +8,9 @@ def create_T(numberOfOptions=2, isKDevided=False):
             options = []
             for i in range(numberOfOptions):
                 if isKDevided:
-                    options.append(random.randint(1+i*(K//numberOfOptions), (i+1)*(K//numberOfOptions)))
+                    lower = 1 + i * (K // numberOfOptions)
+                    upper = (i + 1) * (K // numberOfOptions)
+                    options.append(random.randint(lower, max(lower, upper)))
                 else:
                     options.append(random.randint(1, K))
             T.append(tuple(options))

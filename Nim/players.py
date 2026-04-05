@@ -23,11 +23,13 @@ class Player:
         return random.choice(Ti)
 
     def lut_move(self, N, s, ns, Ts):
-        if ns+Ts[0] >= N:
-            return Ts[0]
-        elif ns+Ts[1] >= N:
-            return Ts[1]
-        return Ts[0] if self.lut.get(s+1, ns+Ts[0], False) == 1 else Ts[1]
+        for tsi in Ts:
+            if ns + tsi >= N:
+                return tsi
+        for tsi in Ts:
+            if self.lut.get(s+1, ns+tsi, False) == 1:
+                return tsi
+        return self.random_move(Ts) # fallback option if there is no winning move
     
     def make_move(self, N, s, ns, T):
         Ts = T[s]
