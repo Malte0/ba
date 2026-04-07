@@ -19,6 +19,24 @@ def create_T(numberOfOptions=2, isKDevided=False):
 
 DEFAULT_T = create_T()
 
+# allows to fix some values in T, while randomizing the rest
+def partially_fixed_T(fixed_values, numberOfOptions=2, isKDevided=False):
+    options_with_fixed_value = numberOfOptions - len(fixed_values)
+    def create_table(N, K):
+        T = []
+        for i in range(N):
+            options = list(fixed_values)
+            for j in range(options_with_fixed_value):
+                if isKDevided:
+                    lower = 1 + j * (K // options_with_fixed_value)
+                    upper = (j + 1) * (K // options_with_fixed_value)
+                    options.append(random.randint(lower, max(lower, upper)))
+                else:
+                    options.append(random.randint(1, K))
+            T.append(tuple(options))
+        return T
+    return create_table
+
 # winners thinking steps are returned
 def play_game(N, T, player1: Player, player2: Player, verbose=False):
     ns = 0

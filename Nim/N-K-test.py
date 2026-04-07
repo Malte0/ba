@@ -1,11 +1,12 @@
-from game import play_tournament
+from game import partially_fixed_T, play_tournament
 from players import Player, create_players
 import matplotlib.pyplot as plt
 
-NUMBER_OF_GAMES = 100
+NUMBER_OF_GAMES = 200
 NUMBER_OF_PLAYERS = 2
-PLOT_EFFICIENCY_BY_TIME = False
+PLOT_EFFICIENCY_BY_TIME = True
 VERBOSE = False
+
 
 def player_thinking_steps(n, k):
     # Keep a consistent gap between players while avoiding division-by-zero for small k.
@@ -56,7 +57,7 @@ def plot_results(
 def main():
     N_VALUES = [50, 75, 100, 125, 150]
     K_VALUES = [5, 6, 7, 8, 9]
-    ITERATIONS_PER_SETTING = 10
+    ITERATIONS_PER_SETTING = 20
 
     win_rate_by_k: dict[int, dict[int, float]] = {k: {} for k in K_VALUES}
     efficiency_by_k: dict[int, dict[int, float]] = {k: {} for k in K_VALUES}
