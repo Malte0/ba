@@ -1,4 +1,5 @@
 import random
+from time import time
 from players import Player
 
 def create_T(numberOfOptions=2, isKDevided=False):
@@ -61,16 +62,22 @@ def play_round(N, K, player1: Player, player2: Player, results, verbose=False, c
     results[winner_steps] = results.get(winner_steps, 0) + 1
     return results
 
+
 def play_tournament(players, N, K, NUMBER_OF_GAMES, create_T=DEFAULT_T):
     results = {} # dict of how may games players have won
     games_played = {} # dict of how many games players have played
+    computation_steps = {} # dict of how much memory players have used
+    total_games = len(players) * (len(players) - 1) // 2 * NUMBER_OF_GAMES
+    total_i = 0
     for i in range(len(players)):
-        print(f"Running at step {i} of {len(players)}")
+        print(f"Tournament progress {(total_i/total_games * 100):.2f}%")
         for j in range(i+1, len(players)):
             for _ in range(NUMBER_OF_GAMES):
+                total_i += 1
                 games_played[players[i].thinking_steps] = games_played.get(players[i].thinking_steps, 0)+1
                 games_played[players[j].thinking_steps] = games_played.get(players[j].thinking_steps, 0)+1
                 results = play_round(N, K, players[i], players[j], results, create_T=create_T)
-    # thinking_times = {player.thinking_steps: player.thinking_times for player in players}
+                computation_steps[players[i].thinking_steps] = computation_steps.get(players[i].thinking_steps, 0) + len(players[i].lut.lut.keys())
+                computation_steps[players[j].thinking_steps] = computation_steps.get(players[j].thinking_steps, 0) + len(players[j].lut.lut.keys())
     thinking_times = {player.thinking_steps: player.thinking_times for player in players}
-    return results, games_played, thinking_times
+    return results, games_played, thinking_times, computation_steps
