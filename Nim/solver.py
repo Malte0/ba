@@ -17,7 +17,7 @@ class LookUpTable:
         self.clear()
         self.creation_steps = 0
         if max_steps > 0:
-            self.recursive_iteration(N, T, max_steps)
+            self.iteration(N, T, max_steps)
         return self.creation_steps
 
     # def get_possible_ns(self, N, K):
@@ -37,7 +37,8 @@ class LookUpTable:
                 possible_ns[step].append(ns)
         return possible_ns
 
-    def recursive_iteration(self, N, T, max_steps):
+    # N is the number of objects to be taken, T is the list of possible moves for each step, max_steps is the maximum number of steps to consider
+    def iteration(self, N, T, max_steps):
         possible_ns = self.get_possible_ns(N)
         # produces N-1, ..., 0
         for step in range(N-1, -1, -1):

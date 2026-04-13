@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 
 from player import Player
 
-NUMBER_OF_PLAYERS = 100
-NUMBER_OF_ROUNDS = 10_000
+NUMBER_OF_PLAYERS = 20
+NUMBER_OF_ROUNDS = 1_000
 CHOICE_RANGE = [1, 100]
 MEAN_PLAYER_INTELLIGENCE = 0.8 # 1 is most inttelligent, 0 is least intelligent
 SIGMA_SCALE = 0.3

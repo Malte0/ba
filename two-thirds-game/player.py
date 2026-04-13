@@ -8,6 +8,7 @@ def clamp_choice(choice):
 
 class Player:
     intelligence_epsilon = 0.01 # A small value to prevent infinite loops for very intelligent players
+    answer = 0
 
     def __init__(self, id, intelligence):
         self.id = id
@@ -25,4 +26,5 @@ class Player:
         while random_number < player_intelligence:
             two_thirds *= (2 / 3)
             random_number = random.uniform(0,1)
-        return clamp_choice(two_thirds)
+        self.answer = clamp_choice(two_thirds)
+        return self.answer

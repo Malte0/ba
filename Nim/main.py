@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 
 N = 100
 K = 8
-NUMBER_OF_GAMES = 100
 NUMBER_OF_PLAYERS = 2
+NUMBER_OF_GAMES = 100
 def player_thinking_steps(player_index):
     return N-(N//(K//2))+player_index*(N//(K//2))
 VERBOSE = False
