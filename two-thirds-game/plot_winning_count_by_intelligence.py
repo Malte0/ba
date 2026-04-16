@@ -7,9 +7,9 @@ from Game import create_opponents, determine_winners, get_winning_number
 from player import Player
 
 NUMBER_OF_PLAYERS = 1000
-NUMBER_OF_ROUNDS = 10_00
+NUMBER_OF_ROUNDS = 100_000
 CHOICE_RANGE = [1, 100]
-MEAN_PLAYER_INTELLIGENCE = 0.78 # 1 is most inttelligent, 0 is least intelligent
+MEAN_PLAYER_INTELLIGENCE = 0.76 # 1 is most inttelligent, 0 is least intelligent
 SIGMA_SCALE = 0.3
 
 def plot_results(wins_by_intelligence):
@@ -26,16 +26,16 @@ def plot_results(wins_by_intelligence):
 def main():
     opponents: list[Player] = create_opponents(NUMBER_OF_PLAYERS, MEAN_PLAYER_INTELLIGENCE, SIGMA_SCALE)
     for round in range(NUMBER_OF_ROUNDS):
-        answers = [opponent.give_answer(opponent.intelligence) for opponent in opponents]
+        answers = [opponent.give_answer() for opponent in opponents]
         winning_number = get_winning_number(answers)
         winners = determine_winners(opponents, winning_number)
         for winner in winners:
             winner.add_win()
     wins_by_intelligence = {}
     for opponent in opponents:
-        if opponent.intelligence not in wins_by_intelligence:
-            wins_by_intelligence[opponent.intelligence] = []
-        wins_by_intelligence[opponent.intelligence].append(opponent.score)
+        if opponent.thinking_steps not in wins_by_intelligence:
+            wins_by_intelligence[opponent.thinking_steps] = []
+        wins_by_intelligence[opponent.thinking_steps].append(opponent.score)
     plot_results(wins_by_intelligence)    
     
 

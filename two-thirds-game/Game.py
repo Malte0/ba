@@ -9,7 +9,7 @@ def create_opponents(number_of_players, mean_intelligence=0.5, sigma_scale=0.3):
     for id in range(number_of_players):
         intelligence = random.gauss(mean_intelligence, sigma_scale)
         intelligence = max(0, min(1, intelligence)) # Ensure intelligence is between 0 and 1
-        opponents.append(Player(id=id, intelligence=intelligence))
+        opponents.append(Player(id=id, thinking_depth=intelligence))
     return opponents
 
 def get_winning_number(answers):

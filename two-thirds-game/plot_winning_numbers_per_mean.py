@@ -17,7 +17,7 @@ def create_opponents(mean_intelligence=MEAN_PLAYER_INTELLIGENCE):
     for id in range(NUMBER_OF_PLAYERS):
         intelligence = random.gauss(mean_intelligence, SIGMA_SCALE)
         intelligence = max(0, min(1, intelligence)) # Ensure intelligence is between 0 and 1
-        opponents.append(Player(id=id, intelligence=intelligence))
+        opponents.append(Player(id=id, thinking_depth=intelligence))
     return opponents
 
 intelligence_epsilon = 0.01 # A small value to prevent infinite loops for very intelligent players
@@ -30,7 +30,7 @@ def get_winning_number(answers):
 def determine_winners(opponents, winning_number):
     winners = []
     for opponent in opponents:
-        if opponent.give_answer(opponent.intelligence) == winning_number:
+        if opponent.give_answer() == winning_number:
             winners.append(opponent)
     return winners
 
@@ -62,7 +62,7 @@ def main():
         opponents = create_opponents(mean_intelligence=mean_intelligence)
         winning_numbers = {}
         for round in range(NUMBER_OF_ROUNDS):
-            answers = [opponent.give_answer(opponent.intelligence) for opponent in opponents]
+            answers = [opponent.give_answer() for opponent in opponents]
             winning_number = get_winning_number(answers)
             winning_numbers[winning_number] = winning_numbers.get(winning_number, 0) + 1
             winners = determine_winners(opponents, winning_number)
@@ -70,7 +70,7 @@ def main():
                 winner.add_win()
         opponents.sort(key=lambda x: x.score, reverse=True)
         for opponent in opponents:
-            print(f"Player {opponent.id}, int: {opponent.intelligence:.2f}, score {opponent.score}")
+            print(f"Player {opponent.id}, int: {opponent.thinking_steps:.2f}, score {opponent.score}")
 
         winning_numbers_per_mean[mean_intelligence] = winning_numbers
     

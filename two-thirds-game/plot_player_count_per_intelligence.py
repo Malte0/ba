@@ -9,7 +9,7 @@ from player import Player
 NUMBER_OF_PLAYERS = 100000
 NUMBER_OF_ROUNDS = 10_000
 CHOICE_RANGE = [1, 100]
-MEAN_PLAYER_INTELLIGENCE = 0.78 # 1 is most inttelligent, 0 is least intelligent
+MEAN_PLAYER_INTELLIGENCE = 0.76 # 1 is most inttelligent, 0 is least intelligent
 SIGMA_SCALE = 0.08 # value with the nicest curve
 
 def plot_results(player_count_by_intelligence):
@@ -27,7 +27,7 @@ def main():
     opponents: list[Player] = create_opponents(NUMBER_OF_PLAYERS, MEAN_PLAYER_INTELLIGENCE, SIGMA_SCALE)
     player_count_by_intelligence = {}
     for opponent in opponents:
-        rounded_intelligence = round(opponent.intelligence, 2)
+        rounded_intelligence = round(opponent.thinking_steps, 2)
         if rounded_intelligence not in player_count_by_intelligence:
             player_count_by_intelligence[rounded_intelligence] = 0
         player_count_by_intelligence[rounded_intelligence] += 1

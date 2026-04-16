@@ -27,13 +27,13 @@ def main():
     opponents: list[Player] = create_opponents(NUMBER_OF_PLAYERS, MEAN_PLAYER_INTELLIGENCE, SIGMA_SCALE)
     answers_by_intelligence = {}
     for round in range(NUMBER_OF_ROUNDS):
-        answers = [opponent.give_answer(opponent.intelligence) for opponent in opponents]
+        answers = [opponent.give_answer() for opponent in opponents]
         winning_number = get_winning_number(answers)
         winners = determine_winners(opponents, winning_number)
         for opponent in opponents:
-            if opponent.intelligence not in answers_by_intelligence:
-                answers_by_intelligence[opponent.intelligence] = []
-            answers_by_intelligence[opponent.intelligence].append(opponent.answer)
+            if opponent.thinking_depth not in answers_by_intelligence:
+                answers_by_intelligence[opponent.thinking_depth] = []
+            answers_by_intelligence[opponent.thinking_depth].append(opponent.answer)
         for winner in winners:
             winner.add_win()
     
