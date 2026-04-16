@@ -17,7 +17,7 @@ def create_opponents(mean_intelligence=MEAN_PLAYER_INTELLIGENCE):
     for id in range(NUMBER_OF_PLAYERS):
         intelligence = random.gauss(mean_intelligence, SIGMA_SCALE)
         intelligence = max(0, min(1, intelligence)) # Ensure intelligence is between 0 and 1
-        opponents.append(Player(id=id, thinking_depth=intelligence))
+        opponents.append(Player(id=id, reasoning_depth=intelligence))
     return opponents
 
 intelligence_epsilon = 0.01 # A small value to prevent infinite loops for very intelligent players

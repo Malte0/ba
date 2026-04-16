@@ -4,12 +4,10 @@ import random
 from player import Player
 
 # creates a gaussian distribution of intelligence levels with mean at AVG_PLAYER_INTELLIGENCE and a standard deviation of SIGMA_SCALE
-def create_opponents(number_of_players, mean_intelligence=0.5, sigma_scale=0.3):
+def create_opponents(number_of_players):
     opponents = []
     for id in range(number_of_players):
-        intelligence = random.gauss(mean_intelligence, sigma_scale)
-        intelligence = max(0, min(1, intelligence)) # Ensure intelligence is between 0 and 1
-        opponents.append(Player(id=id, thinking_depth=intelligence))
+        opponents.append(Player(id=id))
     return opponents
 
 def get_winning_number(answers):

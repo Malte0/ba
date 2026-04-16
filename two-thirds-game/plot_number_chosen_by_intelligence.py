@@ -6,8 +6,8 @@ from Game import get_winning_number, create_opponents
 from player import Player
 from plot_winning_numbers_per_mean import determine_winners
 
-NUMBER_OF_PLAYERS = 200
-NUMBER_OF_ROUNDS = 1_000
+NUMBER_OF_PLAYERS = 1000
+NUMBER_OF_ROUNDS = 10_000
 CHOICE_RANGE = [1, 100]
 MEAN_PLAYER_INTELLIGENCE = 0.5 # 1 is most inttelligent, 0 is least intelligent
 SIGMA_SCALE = 0.3 # value with the nicest curve
@@ -31,9 +31,9 @@ def main():
         winning_number = get_winning_number(answers)
         winners = determine_winners(opponents, winning_number)
         for opponent in opponents:
-            if opponent.thinking_depth not in answers_by_intelligence:
-                answers_by_intelligence[opponent.thinking_depth] = []
-            answers_by_intelligence[opponent.thinking_depth].append(opponent.answer)
+            if opponent.reasoning_depth not in answers_by_intelligence:
+                answers_by_intelligence[opponent.reasoning_depth] = []
+            answers_by_intelligence[opponent.reasoning_depth].append(opponent.answer)
         for winner in winners:
             winner.add_win()
     
