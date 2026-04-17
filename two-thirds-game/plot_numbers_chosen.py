@@ -5,7 +5,7 @@ from Game import get_winning_number, create_opponents
 from player import Player
 from plot_winning_numbers_per_mean import determine_winners
 
-NUMBER_OF_PLAYERS = 1000
+NUMBER_OF_PLAYERS = 10000
 NUMBER_OF_ROUNDS = 1
 CHOICE_RANGE = [1, 100]
 MEAN_PLAYER_INTELLIGENCE = 0.25 # 1 is most inttelligent, 0 is least intelligent
@@ -32,14 +32,14 @@ def main():
     opponents: list[Player] = create_opponents(NUMBER_OF_PLAYERS)
     answer_frequency = {number: 0 for number in range(CHOICE_RANGE[0], CHOICE_RANGE[1] + 1)}
     for round in range(NUMBER_OF_ROUNDS):
-        answers = [opponent.give_answer() for opponent in opponents]
+        answers = [opponent.guess_number() for opponent in opponents]
         winning_number = get_winning_number(answers)
         winners = determine_winners(opponents, winning_number)
         for answer in answers:
             chosen_number = max(CHOICE_RANGE[0], min(CHOICE_RANGE[1], int(answer + 0.5)))
             answer_frequency[chosen_number] += 1
         for winner in winners:
-            winner.add_win()
+            winner.score += 1
 
     opponents.sort(key=lambda x: x.score, reverse=False)
     plot_results(answer_frequency)

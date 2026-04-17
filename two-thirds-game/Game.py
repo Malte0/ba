@@ -7,7 +7,7 @@ from player import Player
 def create_opponents(number_of_players):
     opponents = []
     for id in range(number_of_players):
-        opponents.append(Player(id=id))
+        opponents.append(Player(id=id, reasoning_depth=round(random.uniform(0, 5))))
     return opponents
 
 def get_winning_number(answers):

@@ -30,7 +30,7 @@ def get_winning_number(answers):
 def determine_winners(opponents, winning_number):
     winners = []
     for opponent in opponents:
-        if opponent.give_answer() == winning_number:
+        if opponent.guess_number() == winning_number:
             winners.append(opponent)
     return winners
 
@@ -62,12 +62,12 @@ def main():
         opponents = create_opponents(mean_intelligence=mean_intelligence)
         winning_numbers = {}
         for round in range(NUMBER_OF_ROUNDS):
-            answers = [opponent.give_answer() for opponent in opponents]
+            answers = [opponent.guess_number() for opponent in opponents]
             winning_number = get_winning_number(answers)
             winning_numbers[winning_number] = winning_numbers.get(winning_number, 0) + 1
             winners = determine_winners(opponents, winning_number)
             for winner in winners:
-                winner.add_win()
+                winner.score += 1
         opponents.sort(key=lambda x: x.score, reverse=True)
         for opponent in opponents:
             print(f"Player {opponent.id}, int: {opponent.thinking_steps:.2f}, score {opponent.score}")

@@ -26,11 +26,11 @@ def plot_results(wins_by_intelligence):
 def main():
     opponents: list[Player] = create_opponents(NUMBER_OF_PLAYERS, MEAN_PLAYER_INTELLIGENCE, SIGMA_SCALE)
     for round in range(NUMBER_OF_ROUNDS):
-        answers = [opponent.give_answer() for opponent in opponents]
+        answers = [opponent.guess_number() for opponent in opponents]
         winning_number = get_winning_number(answers)
         winners = determine_winners(opponents, winning_number)
         for winner in winners:
-            winner.add_win()
+            winner.score += 1()
     wins_by_intelligence = {}
     for opponent in opponents:
         if opponent.thinking_steps not in wins_by_intelligence:

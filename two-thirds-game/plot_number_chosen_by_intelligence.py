@@ -27,7 +27,7 @@ def main():
     opponents: list[Player] = create_opponents(NUMBER_OF_PLAYERS, MEAN_PLAYER_INTELLIGENCE, SIGMA_SCALE)
     answers_by_intelligence = {}
     for round in range(NUMBER_OF_ROUNDS):
-        answers = [opponent.give_answer() for opponent in opponents]
+        answers = [opponent.guess_number() for opponent in opponents]
         winning_number = get_winning_number(answers)
         winners = determine_winners(opponents, winning_number)
         for opponent in opponents:
@@ -35,7 +35,7 @@ def main():
                 answers_by_intelligence[opponent.reasoning_depth] = []
             answers_by_intelligence[opponent.reasoning_depth].append(opponent.answer)
         for winner in winners:
-            winner.add_win()
+            winner.score += 1()
     
     avg_answers_by_intelligence = {}
     for intelligence, answers in answers_by_intelligence.items():
