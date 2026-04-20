@@ -31,9 +31,9 @@ def main():
         winning_number = get_winning_number(answers)
         winners = determine_winners(opponents, winning_number)
         for opponent in opponents:
-            if opponent.reasoning_depth not in answers_by_intelligence:
-                answers_by_intelligence[opponent.reasoning_depth] = []
-            answers_by_intelligence[opponent.reasoning_depth].append(opponent.answer)
+            if opponent.reasoning_cost not in answers_by_intelligence:
+                answers_by_intelligence[opponent.reasoning_cost] = []
+            answers_by_intelligence[opponent.reasoning_cost].append(opponent.answer)
         for winner in winners:
             winner.score += 1()
     

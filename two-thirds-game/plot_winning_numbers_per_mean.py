@@ -25,12 +25,12 @@ intelligence_epsilon = 0.01 # A small value to prevent infinite loops for very i
 
 def get_winning_number(answers):
     average = sum(answers) / len(answers)
-    return ceil(average * 2 / 3)
+    return ceil(average * (2 / 3))
 
 def determine_winners(opponents, winning_number):
     winners = []
     for opponent in opponents:
-        if opponent.guess_number() == winning_number:
+        if opponent.answer == winning_number:
             winners.append(opponent)
     return winners
 
