@@ -3,8 +3,9 @@ from math import ceil
 import random
 
 CHOICE_RANGE = [1, 100]
+
 NOISE_CHANCE = 0.75
-MIN_REASONING_COST = 0.05
+MIN_REASONING_COST_EPSILON = 0.01
 
 class Player:
     id = -1
@@ -18,10 +19,12 @@ class Player:
         self.id = id
         self.reasoning_cost = reasoning_cost
     
+    # Player guesses a number between 1 and 100, starting with 50 and adjusting based on remaining reasoning budget
     def guess_number(self):
+        self.reasoning_budget= 1
         guessed_number = 50
 
-        if (self.reasoning_cost < MIN_REASONING_COST):
+        if self.reasoning_cost < MIN_REASONING_COST_EPSILON:
             self.answer = 1
             return 1
 

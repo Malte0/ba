@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 N = 100
 K = 8
 V_VALUES = list(range(1, K + 1))
-NUMBER_OF_GAMES = 1000
+NUMBER_OF_GAMES = 10
 NUMBER_OF_PLAYERS = 2
 def player_thinking_steps(player_index):
     return N-(N//(K//2))+player_index*(N//(K//2))
@@ -60,7 +60,7 @@ def main():
     for v in V_VALUES:
         T_function = partially_fixed_T(fixed_values=[v], numberOfOptions=4, isKDevided=True)
         players: list[Player] = create_players(NUMBER_OF_PLAYERS, player_thinking_steps)
-        results, games_played, _ = play_tournament(players, N, K, NUMBER_OF_GAMES, create_T=T_function)
+        results, games_played, _, _ = play_tournament(players, N, K, NUMBER_OF_GAMES, create_T=T_function)
         results_by_v[v] = results
         games_played_by_v[v] = games_played
 

@@ -1,9 +1,9 @@
 
-from math import ceil
 import random
 from player import Player
 
-# creates a gaussian distribution of intelligence levels with mean at AVG_PLAYER_INTELLIGENCE and a standard deviation of SIGMA_SCALE
+CHOICE_RANGE = [1, 100]
+
 def create_opponents(number_of_players, mean_reasoning_cost=0.1, sigma_scale=0.2):
     opponents = []
     for id in range(number_of_players):
@@ -14,11 +14,22 @@ def create_opponents(number_of_players, mean_reasoning_cost=0.1, sigma_scale=0.2
 
 def get_winning_number(answers):
     average = sum(answers) / len(answers)
-    return max(1, round(average * (2 / 3)))
+    rounded = round(average * (2 / 3))
+    return rounded
 
-def determine_winners(opponents: list[Player], winning_number):
-    winners = []
+def closest_to_winning_number(opponents: list[Player], winning_number: int):
+    closest_opponents = []
+    closest_distance: int = 100
     for opponent in opponents:
-        if opponent.answer == winning_number:
-            winners.append(opponent)
+        distance = abs(opponent.answer - winning_number)
+        if distance < closest_distance:
+            closest_distance = distance
+            closest_opponents = [opponent]
+        elif distance == closest_distance:
+            closest_opponents.append(opponent)
+    return closest_opponents
+
+def determine_winners(opponents: list[Player]):
+    winning_number = get_winning_number([opponent.guess_number() for opponent in opponents])
+    winners = closest_to_winning_number(opponents, winning_number)
     return winners

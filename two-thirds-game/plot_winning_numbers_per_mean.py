@@ -1,38 +1,12 @@
 
-from math import ceil
-import random
 import matplotlib.pyplot as plt
 
-from player import Player
+from Game import create_opponents, determine_winners, get_winning_number
 
 NUMBER_OF_PLAYERS = 20
 NUMBER_OF_ROUNDS = 1_000
-CHOICE_RANGE = [1, 100]
-MEAN_PLAYER_INTELLIGENCE = 0.8 # 1 is most inttelligent, 0 is least intelligent
-SIGMA_SCALE = 0.3
-
-# creates a gaussian distribution of intelligence levels with mean at AVG_PLAYER_INTELLIGENCE and a standard deviation of SIGMA_SCALE
-def create_opponents(mean_intelligence=MEAN_PLAYER_INTELLIGENCE):
-    opponents = []
-    for id in range(NUMBER_OF_PLAYERS):
-        intelligence = random.gauss(mean_intelligence, SIGMA_SCALE)
-        intelligence = max(0, min(1, intelligence)) # Ensure intelligence is between 0 and 1
-        opponents.append(Player(id=id, reasoning_depth=intelligence))
-    return opponents
-
-intelligence_epsilon = 0.01 # A small value to prevent infinite loops for very intelligent players
-# A more intelligent player will do more induction steps getting closer to 1
-
-def get_winning_number(answers):
-    average = sum(answers) / len(answers)
-    return ceil(average * (2 / 3))
-
-def determine_winners(opponents, winning_number):
-    winners = []
-    for opponent in opponents:
-        if opponent.answer == winning_number:
-            winners.append(opponent)
-    return winners
+MEAN_PLAYER_REASONING_COST = 0.4 # 1 is most inttelligent, 0 is least intelligent
+SIGMA_SCALE = 0.2
 
 def plot_results(winning_numbers_per_mean):
     plt.figure(figsize=(10, 6))
@@ -48,7 +22,7 @@ def plot_results(winning_numbers_per_mean):
 
     plt.xlabel('Number')
     plt.ylabel('Number of wins')
-    plt.title('Winning numbers by mean intelligence')
+    plt.title('Winning numbers by mean reasoning cost')
     plt.legend()
     plt.grid(alpha=0.2)
     plt.tight_layout()
@@ -58,21 +32,18 @@ def main():
     means = [0.25, 0.5, 0.75, 1]
 
     winning_numbers_per_mean = {}
-    for mean_intelligence in means:
-        opponents = create_opponents(mean_intelligence=mean_intelligence)
+    for mean_reasoning_cost in means:
+        opponents = create_opponents(NUMBER_OF_PLAYERS, mean_reasoning_cost, SIGMA_SCALE)
         winning_numbers = {}
-        for round in range(NUMBER_OF_ROUNDS):
+        for _ in range(NUMBER_OF_ROUNDS):
             answers = [opponent.guess_number() for opponent in opponents]
             winning_number = get_winning_number(answers)
             winning_numbers[winning_number] = winning_numbers.get(winning_number, 0) + 1
-            winners = determine_winners(opponents, winning_number)
+            winners = determine_winners(opponents)
             for winner in winners:
                 winner.score += 1
-        opponents.sort(key=lambda x: x.score, reverse=True)
-        for opponent in opponents:
-            print(f"Player {opponent.id}, int: {opponent.thinking_steps:.2f}, score {opponent.score}")
 
-        winning_numbers_per_mean[mean_intelligence] = winning_numbers
+        winning_numbers_per_mean[mean_reasoning_cost] = winning_numbers
     
     plot_results(winning_numbers_per_mean)
 
