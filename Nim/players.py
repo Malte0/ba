@@ -6,6 +6,7 @@ class Player:
     thinking_steps: int
     lut: LookUpTable
     thinking_times: list[int] = []
+    computation_steps: list[int] = []
 
     def __init__(self, thinking_steps=0):
         self.thinking_steps = thinking_steps
@@ -14,28 +15,29 @@ class Player:
     
     def plan_ahead(self, N, T):
         self.time_start = time.time()
-        planning_steps = self.lut.populate(N, T, self.thinking_steps)
+        computation_steps = self.lut.populate(N, T, self.thinking_steps)
         self.time_end = time.time()
         self.thinking_times.append(self.time_end - self.time_start)
-        return planning_steps
+        self.computation_steps.append(computation_steps)
+        return computation_steps
 
     def random_move(self, Ti):
         return random.choice(Ti)
 
     def lut_move(self, N, s, ns, Ts):
+        # if there is a move that wins immediately, take it
         for tsi in Ts:
             if ns + tsi >= N:
                 return tsi
+        # otherwise, take a move that leads to a winning position in the next step
         for tsi in Ts:
             if self.lut.get(s+1, ns+tsi, False) == 1:
                 return tsi
-        return self.random_move(Ts) # fallback option if there is no winning move
+        return self.random_move(Ts) # fallback option if there is no good move
     
     def make_move(self, N, s, ns, T):
         Ts = T[s]
-        if self.lut.get(s, ns, True) == 1:
-            return self.lut_move(N, s, ns, Ts)
-        return self.random_move(Ts)
+        return self.lut_move(N, s, ns, Ts)
 
 def create_players(number_of_players, player_thinking_steps):
     players = []

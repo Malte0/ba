@@ -20,6 +20,9 @@ def create_T(numberOfOptions=2, isKDevided=False):
 
 DEFAULT_T = create_T()
 
+# example of creating a T with 2 options, where the first option is between 1 and 4, and the second option is between 5 and 8
+# print(create_T(numberOfOptions=2, isKDevided=True)(1, 8)) 
+
 # allows to fix some values in T, while randomizing the rest
 def partially_fixed_T(fixed_values, numberOfOptions=2, isKDevided=False):
     options_with_fixed_value = numberOfOptions - len(fixed_values)
@@ -64,20 +67,15 @@ def play_round(N, K, player1: Player, player2: Player, results, verbose=False, c
 
 
 def play_tournament(players, N, K, NUMBER_OF_GAMES, create_T=DEFAULT_T):
-    results = {} # dict of how may games players have won
-    games_played = {} # dict of how many games players have played
-    computation_steps = {} # dict of how much memory players have used
-    total_games = len(players) * (len(players) - 1) // 2 * NUMBER_OF_GAMES
-    total_i = 0
+    results = { player.thinking_steps: 0 for player in players } # dict of how may games players have won
+    games_played = { player.thinking_steps: 0 for player in players } # dict of how many games players have played
+    computation_steps = { player.thinking_steps: 0 for player in players } # dict of how much memory players have used
     for i in range(len(players)):
-        print(f"Tournament progress {(total_i/total_games * 100):.2f}%")
         for j in range(i+1, len(players)):
             for _ in range(NUMBER_OF_GAMES):
-                total_i += 1
                 games_played[players[i].thinking_steps] = games_played.get(players[i].thinking_steps, 0)+1
                 games_played[players[j].thinking_steps] = games_played.get(players[j].thinking_steps, 0)+1
-                results = play_round(N, K, players[i], players[j], results, create_T=create_T)
-                computation_steps[players[i].thinking_steps] = computation_steps.get(players[i].thinking_steps, 0) + len(players[i].lut.lut.keys())
-                computation_steps[players[j].thinking_steps] = computation_steps.get(players[j].thinking_steps, 0) + len(players[j].lut.lut.keys())
+                results: dict[int, int] = play_round(N, K, players[i], players[j], results, create_T=create_T)
     thinking_times = {player.thinking_steps: player.thinking_times for player in players}
+    computation_steps = {player.thinking_steps: player.computation_steps for player in players}
     return results, games_played, thinking_times, computation_steps

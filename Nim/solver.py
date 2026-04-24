@@ -10,15 +10,12 @@ class LookUpTable:
     def get(self, s, ns, myTurn):
         return self.lut.get((s, ns, myTurn), None)
     
-    def clear(self):
-        self.lut.clear()
-    
     def populate(self, N, T, max_steps):
-        self.clear()
-        self.creation_steps = 0
+        self.lut.clear()
+        self.computation_steps = 0
         if max_steps > 0:
-            self.iteration(N, T, max_steps)
-        return self.creation_steps
+            self.iterate(N, T, max_steps)
+        return self.computation_steps
 
     # def get_possible_ns(self, N, K):
     def get_possible_ns(self, N):
@@ -38,28 +35,30 @@ class LookUpTable:
         return possible_ns
 
     # N is the number of objects to be taken, T is the list of possible moves for each step, max_steps is the maximum number of steps to consider
-    def iteration(self, N, T, max_steps):
+    def iterate(self, N, T, max_steps):
         possible_ns = self.get_possible_ns(N)
         # produces N-1, ..., 0
         for step in range(N-1, -1, -1):
             if N-step > max_steps:
                 break
+            # ns is the number of objects left to take, can be from step to N-1
+            # in step 0, ns is always 0, in step N-1, ns can be from N-1 to N-1
             for ns in possible_ns[step]:
-                moves = T[step]
-                self.creation_steps += len(moves)
+                move_options = T[step]
+                self.computation_steps += len(move_options)
 
                 # My turn: I can pick a move that maximizes my winning chance.
-                can_finish_now = any(ns + move >= N for move in moves)
+                can_finish_now = any(ns + move >= N for move in move_options)
                 if can_finish_now:
                     self.lut[(step, ns, True)] = 1
                 else:
-                    next_values = [self.lut.get((step + 1, ns + move, False), 0) for move in moves]
+                    next_values = [self.lut.get((step + 1, ns + move, False), 0) for move in move_options]
                     self.lut[(step, ns, True)] = max(next_values)
 
                 # Opponent turn: opponent picks a move that minimizes my winning chance.
-                opponent_can_finish_now = any(ns + move >= N for move in moves)
+                opponent_can_finish_now = any(ns + move >= N for move in move_options)
                 if opponent_can_finish_now:
                     self.lut[(step, ns, False)] = 0
                 else:
-                    next_values = [self.lut.get((step + 1, ns + move, True), 1) for move in moves]
+                    next_values = [self.lut.get((step + 1, ns + move, True), 1) for move in move_options]
                     self.lut[(step, ns, False)] = min(next_values)

@@ -3,7 +3,7 @@
 # depending on the price and the computation cost, what is the best agent to send?
 
 import matplotlib.pyplot as plt
-from game import create_T, play_tournament
+from game import play_tournament
 import random
 from players import Player
 import time

@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 N = 100
 K = 8
 V_VALUES = list(range(1, K + 1))
-NUMBER_OF_GAMES = 10
+NUMBER_OF_GAMES = 1000
 NUMBER_OF_PLAYERS = 2
 def player_thinking_steps(player_index):
     return N-(N//(K//2))+player_index*(N//(K//2))
