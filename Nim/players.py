@@ -7,6 +7,7 @@ class Player:
     lut: LookUpTable
     thinking_times: list[int] = []
     computation_steps: list[int] = []
+    wins: int = 0
 
     def __init__(self, thinking_steps=0):
         self.thinking_steps = thinking_steps
@@ -28,10 +29,12 @@ class Player:
         # if there is a move that wins immediately, take it
         for tsi in Ts:
             if ns + tsi >= N:
+                # print(f"Player {self.thinking_steps} is taking a winning move: {tsi}")
                 return tsi
         # otherwise, take a move that leads to a winning position in the next step
         for tsi in Ts:
             if self.lut.get(s+1, ns+tsi, False) == 1:
+                # print(f"Player {self.thinking_steps} is taking a winning move: {tsi}")
                 return tsi
         return self.random_move(Ts) # fallback option if there is no good move
     

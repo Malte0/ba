@@ -23,7 +23,7 @@ DEFAULT_T = create_T()
 # example of creating a T with 2 options, where the first option is between 1 and 4, and the second option is between 5 and 8
 # print(create_T(numberOfOptions=2, isKDevided=True)(1, 8)) 
 
-# allows to fix some values in T, while randomizing the rest
+# allows to fix some values in T, while randomizing the rest (UNUSED)
 def partially_fixed_T(fixed_values, numberOfOptions=2, isKDevided=False):
     options_with_fixed_value = numberOfOptions - len(fixed_values)
     def create_table(N, K):
@@ -62,11 +62,14 @@ def play_round(N, K, player1: Player, player2: Player, results, verbose=False, c
     player1.plan_ahead(N, T)
     player2.plan_ahead(N, T)
     winner_steps = play_game(N, T, player1, player2, verbose)
+    for player in [player1, player2]:
+        if player.thinking_steps == winner_steps:
+            player.wins += 1
     results[winner_steps] = results.get(winner_steps, 0) + 1
     return results
 
 
-def play_tournament(players, N, K, NUMBER_OF_GAMES, create_T=DEFAULT_T):
+def play_tournament(players, N, K, NUMBER_OF_GAMES, create_T=DEFAULT_T, verbose=False):
     results = { player.thinking_steps: 0 for player in players } # dict of how may games players have won
     games_played = { player.thinking_steps: 0 for player in players } # dict of how many games players have played
     computation_steps = { player.thinking_steps: 0 for player in players } # dict of how much memory players have used
@@ -75,7 +78,7 @@ def play_tournament(players, N, K, NUMBER_OF_GAMES, create_T=DEFAULT_T):
             for _ in range(NUMBER_OF_GAMES):
                 games_played[players[i].thinking_steps] = games_played.get(players[i].thinking_steps, 0)+1
                 games_played[players[j].thinking_steps] = games_played.get(players[j].thinking_steps, 0)+1
-                results: dict[int, int] = play_round(N, K, players[i], players[j], results, create_T=create_T)
+                results: dict[int, int] = play_round(N, K, players[i], players[j], results, create_T=create_T, verbose=verbose)
     thinking_times = {player.thinking_steps: player.thinking_times for player in players}
     computation_steps = {player.thinking_steps: player.computation_steps for player in players}
     return results, games_played, thinking_times, computation_steps
