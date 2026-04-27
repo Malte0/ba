@@ -8,6 +8,7 @@ class Player:
     thinking_times: list[int] = []
     computation_steps: list[int] = []
     wins: int = 0
+    played_only_winning_moves: bool = True
 
     def __init__(self, thinking_steps=0):
         self.thinking_steps = thinking_steps
@@ -15,6 +16,7 @@ class Player:
         self.lut = LookUpTable()
     
     def plan_ahead(self, N, T):
+        self.played_only_winning_moves = True
         self.time_start = time.time()
         computation_steps = self.lut.populate(N, T, self.thinking_steps)
         self.time_end = time.time()
@@ -25,7 +27,8 @@ class Player:
     def random_move(self, Ti):
         return random.choice(Ti)
 
-    def lut_move(self, N, s, ns, Ts):
+    def make_move(self, N, s, ns, T):
+        Ts = T[s]
         # if there is a move that wins immediately, take it
         for tsi in Ts:
             if ns + tsi >= N:
@@ -36,11 +39,8 @@ class Player:
             if self.lut.get(s+1, ns+tsi, False) == 1:
                 # print(f"Player {self.thinking_steps} is taking a winning move: {tsi}")
                 return tsi
+        self.played_only_winning_moves = False
         return self.random_move(Ts) # fallback option if there is no good move
-    
-    def make_move(self, N, s, ns, T):
-        Ts = T[s]
-        return self.lut_move(N, s, ns, Ts)
 
 def create_players(number_of_players, player_thinking_steps):
     players = []
