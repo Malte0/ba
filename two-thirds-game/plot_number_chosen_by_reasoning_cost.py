@@ -1,7 +1,7 @@
 
 import matplotlib.pyplot as plt
 
-from Game import determine_winners, create_opponents
+from Game import determine_winners, create_players
 from player import Player
 
 NUMBER_OF_PLAYERS = 1000
@@ -21,7 +21,7 @@ def plot_results(avg_answers_by_reasoning_cost: dict[float, float]):
     plt.show()
 
 def main():
-    opponents: list[Player] = create_opponents(NUMBER_OF_PLAYERS, MEAN_REASONING_COST, SIGMA_SCALE)
+    opponents: list[Player] = create_players(NUMBER_OF_PLAYERS, MEAN_REASONING_COST, SIGMA_SCALE)
     answers_by_reasoning_cost = {}
     for _ in range(NUMBER_OF_ROUNDS):
         [opponent.guess_number() for opponent in opponents]

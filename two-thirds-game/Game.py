@@ -4,7 +4,7 @@ from player import Player
 
 CHOICE_RANGE = [1, 100]
 
-def create_opponents(number_of_players, mean_reasoning_cost=0.1, sigma_scale=0.2):
+def create_players(number_of_players, mean_reasoning_cost=0.1, sigma_scale=0.2):
     opponents = []
     for id in range(number_of_players):
         sampled_cost = random.gauss(mean_reasoning_cost, sigma_scale)

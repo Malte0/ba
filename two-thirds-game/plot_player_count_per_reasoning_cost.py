@@ -4,7 +4,7 @@ import random
 import matplotlib.pyplot as plt
 from matplotlib.ticker import PercentFormatter
 
-from Game import create_opponents, determine_winners, get_winning_number
+from Game import create_players, determine_winners, get_winning_number
 from player import Player
 
 NUMBER_OF_PLAYERS = 100000
@@ -26,7 +26,7 @@ def plot_results(player_count_by_reasoning_cost):
     plt.show()
 
 def main():
-    opponents: list[Player] = create_opponents(NUMBER_OF_PLAYERS, MEAN_REASONING_COST)
+    opponents: list[Player] = create_players(NUMBER_OF_PLAYERS, MEAN_REASONING_COST)
     player_count_by_reasoning_cost = {}
     for opponent in opponents:
         rounded_reasoning_cost = round(opponent.reasoning_cost, 2)

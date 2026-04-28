@@ -47,12 +47,14 @@ class LookUpTable:
                 move_options = T[step]
                 self.computation_steps += len(move_options)
 
-                # My turn: I can pick a move that maximizes my winning chance.
                 can_win_now = any(ns + move >= N for move in move_options)
                 if can_win_now:
+                    # I immediately win
                     self.lut[(step, ns, True)] = 1
+                    # Opponent immediately wins, so I lose.
                     self.lut[(step, ns, False)] = 0
                 else:
+                    # My turn: I pick a move that maximizes my winning chance.
                     next_values = [self.lut.get((step + 1, ns + move, False), 0) for move in move_options]
                     self.lut[(step, ns, True)] = max(next_values)
                     # Opponent turn: opponent picks a move that minimizes my winning chance.

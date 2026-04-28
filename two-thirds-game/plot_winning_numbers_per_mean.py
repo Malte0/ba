@@ -1,7 +1,7 @@
 
 import matplotlib.pyplot as plt
 
-from Game import create_opponents, determine_winners, get_winning_number
+from Game import create_players, determine_winners, get_winning_number
 
 NUMBER_OF_PLAYERS = 20
 NUMBER_OF_ROUNDS = 1_000
@@ -33,7 +33,7 @@ def main():
 
     winning_numbers_per_mean = {}
     for mean_reasoning_cost in means:
-        opponents = create_opponents(NUMBER_OF_PLAYERS, mean_reasoning_cost, SIGMA_SCALE)
+        opponents = create_players(NUMBER_OF_PLAYERS, mean_reasoning_cost, SIGMA_SCALE)
         winning_numbers = {}
         for _ in range(NUMBER_OF_ROUNDS):
             answers = [opponent.guess_number() for opponent in opponents]

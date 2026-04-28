@@ -1,7 +1,7 @@
 
 import matplotlib.pyplot as plt
 
-from Game import determine_winners, create_opponents
+from Game import determine_winners, create_players
 from player import Player
 
 NUMBER_OF_PLAYERS = 1000
@@ -27,7 +27,7 @@ def main():
     winning_costs_by_reasoning_cost = {i / MAX_I: [] for i in range(1, MAX_I)}
     for i in range(1, MAX_I):
         mean_reasoning_cost = i / MAX_I
-        opponents: list[Player] = create_opponents(NUMBER_OF_PLAYERS, mean_reasoning_cost)
+        opponents: list[Player] = create_players(NUMBER_OF_PLAYERS, mean_reasoning_cost)
         for _ in range(NUMBER_OF_ROUNDS):
             [opponent.guess_number() for opponent in opponents]
             winners = determine_winners(opponents)

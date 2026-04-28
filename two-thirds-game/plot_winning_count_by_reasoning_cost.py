@@ -3,7 +3,7 @@ from math import ceil
 import random
 import matplotlib.pyplot as plt
 
-from Game import create_opponents, determine_winners, get_winning_number
+from Game import create_players, determine_winners, get_winning_number
 from player import Player
 
 NUMBER_OF_PLAYERS = 1000
@@ -23,7 +23,7 @@ def plot_results(wins_by_reasoning_cost):
     plt.show()
 
 def main():
-    opponents: list[Player] = create_opponents(NUMBER_OF_PLAYERS, MEAN_PLAYER_INTELLIGENCE, SIGMA_SCALE)
+    opponents: list[Player] = create_players(NUMBER_OF_PLAYERS, MEAN_PLAYER_INTELLIGENCE, SIGMA_SCALE)
     for _ in range(NUMBER_OF_ROUNDS):
         [opponent.guess_number() for opponent in opponents]
         winners = determine_winners(opponents)

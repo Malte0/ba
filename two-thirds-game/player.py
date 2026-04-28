@@ -19,7 +19,7 @@ class Player:
         self.id = id
         self.reasoning_cost = reasoning_cost
     
-    # Player guesses a number between 1 and 100, starting with 50 and adjusting based on remaining reasoning budget
+    # Player guesses a number between 1 and 100, starting with 50 and taking k-level steps based on remaining reasoning budget
     def guess_number(self):
         self.reasoning_budget= 1
         guessed_number = 50

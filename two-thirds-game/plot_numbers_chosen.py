@@ -1,7 +1,7 @@
 
 import matplotlib.pyplot as plt
 
-from Game import CHOICE_RANGE, create_opponents
+from Game import CHOICE_RANGE, create_players
 from player import Player
 
 NUMBER_OF_PLAYERS = 10_000
@@ -27,7 +27,7 @@ def plot_results(answer_frequency: dict[int, int]):
     plt.show()
 
 def main():
-    opponents: list[Player] = create_opponents(NUMBER_OF_PLAYERS, MEAN_REASONING_COST, SIGMA_SCALE)
+    opponents: list[Player] = create_players(NUMBER_OF_PLAYERS, MEAN_REASONING_COST, SIGMA_SCALE)
     answer_frequency = {number: 0 for number in range(CHOICE_RANGE[0], CHOICE_RANGE[1] + 1)}
     for _ in range(NUMBER_OF_ROUNDS):
         answers = [opponent.guess_number() for opponent in opponents]
