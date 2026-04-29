@@ -10,9 +10,9 @@ import time
 
 N = 100
 K = 8
-EXPTECTED_ROUNDS = N // (K // 2)
 NUMBER_OF_GAMES_PER_MATCH = 20
 NUMBER_OF_PLAYERS_IN_TOURNAMENT = 10
+EXPTECTED_ROUNDS = N // (K // 2)
 AVG_OPPONENT_STRENGTH = 0.5 # linear mean shift from baseline to N in [0, 1]
 SIGMA_SCALE = 0.5 # gaussian spread for opponent thinking steps
 
@@ -30,10 +30,9 @@ def reward_for_winning(thinking_steps):
 
 # craetes players with thinking steps gaussian distributed around a mean that is linearly shifted by the average opponent strength
 def create_opponents():
-    # Baseline is the "minimum strong" level; strength=1 pushes mean close to N.
+    # Baseline is the "minimum strong" level, strength=1 pushes mean close to N.
     baseline_thinking_steps = N - EXPTECTED_ROUNDS
-    strength = max(0.0, min(1.0, AVG_OPPONENT_STRENGTH))
-    mean_thinking_steps = baseline_thinking_steps + strength * (N - baseline_thinking_steps)
+    mean_thinking_steps = baseline_thinking_steps + AVG_OPPONENT_STRENGTH * (N - baseline_thinking_steps)
     sigma = max(1, int((N - baseline_thinking_steps) * SIGMA_SCALE))
     thinking_steps = [
         max(0, min(N, int(round(random.gauss(mean_thinking_steps, sigma)))))
@@ -51,7 +50,6 @@ def plot_results(thinking_steps, rewards):
     plt.grid()
     plt.show()
     
-
 def main():
     win_rates = {}
     cost_results = {}
