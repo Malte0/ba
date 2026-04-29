@@ -29,10 +29,10 @@ def reward_for_winning(thinking_steps):
     return max(0, N - thinking_steps)
 
 # craetes players with thinking steps gaussian distributed around a mean that is linearly shifted by the average opponent strength
-def create_opponents():
+def create_opponents(avg_opponent_strength=AVG_OPPONENT_STRENGTH):
     # Baseline is the "minimum strong" level; strength=1 pushes mean close to N.
     baseline_thinking_steps = N - EXPTECTED_ROUNDS
-    strength = max(0.0, min(1.0, AVG_OPPONENT_STRENGTH))
+    strength = max(0.0, min(1.0, avg_opponent_strength))
     mean_thinking_steps = baseline_thinking_steps + strength * (N - baseline_thinking_steps)
     sigma = max(1, int((N - baseline_thinking_steps) * SIGMA_SCALE))
     thinking_steps = [
@@ -55,15 +55,18 @@ def plot_results(thinking_steps, rewards):
 def main():
     win_rates = {}
     cost_results = {}
-    opponents = create_opponents()
+    opponents = create_opponents(AVG_OPPONENT_STRENGTH)
+    print("Opponents' thinking steps:", [player.thinking_steps for player in opponents])
+    # Player with thinking steps from 75 to 100
     test_thinking_steps = [i for i in range(N - EXPTECTED_ROUNDS, N + 1) if not any(player.thinking_steps == i for player in opponents)]
     iteration_count = len(test_thinking_steps)
     start_time = time.perf_counter()
     for iteration_index, test_player_thinking_steps in enumerate(test_thinking_steps, start=1):
+        print(f"Testing player with {test_player_thinking_steps} thinking steps")
         iteration_start = time.perf_counter()
         test_player = Player(test_player_thinking_steps)
         players = opponents + [test_player]
-        results, games_played, thinking_times, computation_steps = play_tournament(players, N, K, NUMBER_OF_GAMES_PER_MATCH)
+        results, games_played, _, computation_steps, _ = play_tournament(players, N, K, NUMBER_OF_GAMES_PER_MATCH)
         avg_computation_steps = {player.thinking_steps: computation_steps.get(player.thinking_steps, 0) / games_played.get(player.thinking_steps, 1) for player in players}
         win_rates[test_player_thinking_steps] = results.get(test_player_thinking_steps, 0) / games_played.get(test_player_thinking_steps, 1)
         cost_results[test_player_thinking_steps] = cost_of_thinking(avg_computation_steps[test_player_thinking_steps])
@@ -84,6 +87,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-# run convergence nim with non perfect player

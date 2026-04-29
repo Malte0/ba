@@ -98,5 +98,5 @@ def play_tournament(players, N, K, NUMBER_OF_GAMES, create_T=DEFAULT_T, verbose=
                 if players[j].played_only_winning_moves:
                     number_of_guaranteed_wins[players[j].thinking_steps] += 1
     thinking_times = {player.thinking_steps: player.thinking_times for player in players}
-    computation_steps = {player.thinking_steps: player.computation_steps for player in players}
+    computation_steps: dict[int, int] = {player.thinking_steps: player.computation_steps for player in players}
     return results, games_played, thinking_times, computation_steps, number_of_guaranteed_wins
