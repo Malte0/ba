@@ -10,9 +10,9 @@ import time
 
 N = 100
 K = 8
-EXPTECTED_ROUNDS = N // (K // 2)
 NUMBER_OF_GAMES_PER_MATCH = 20
 NUMBER_OF_PLAYERS_IN_TOURNAMENT = 10
+EXPTECTED_ROUNDS = N // (K // 2)
 AVG_OPPONENT_STRENGTH = 0.5 # linear mean shift from baseline to N in [0, 1]
 SIGMA_SCALE = 0.5 # gaussian spread for opponent thinking steps
 
@@ -51,7 +51,6 @@ def plot_results(thinking_steps, rewards):
     plt.grid()
     plt.show()
     
-
 def main():
     win_rates = {}
     cost_results = {}
