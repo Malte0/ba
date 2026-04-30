@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 N = 100
 K = 8
 NUMBER_OF_PLAYERS = 2
-NUMBER_OF_GAMES = 100
+NUMBER_OF_GAMES = 10
 def player_thinking_steps(player_index):
     return N-(N//(K//2))+player_index*(N//(K//2))
 VERBOSE = False
@@ -54,7 +54,7 @@ def plot_results(results, games_played, thinking_times: dict[int, list[int]]):
 
 def main():
     players: list[Player] = create_players(NUMBER_OF_PLAYERS, player_thinking_steps)
-    results, games_played, thinking_times = play_tournament(players, N, K, NUMBER_OF_GAMES)
+    results, games_played, thinking_times, _, _ = play_tournament(players, N, K, NUMBER_OF_GAMES)
     plot_results(results, games_played, thinking_times)
 
 if __name__ == "__main__":
