@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from Game import CHOICE_RANGE, create_players
 from player import Player
 
-NUMBER_OF_PLAYERS = 10_000
+NUMBER_OF_PLAYERS = 1000
 NUMBER_OF_ROUNDS = 1
 MEAN_REASONING_COST = 0.5
 SIGMA_SCALE= 0.2

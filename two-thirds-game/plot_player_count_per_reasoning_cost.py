@@ -9,7 +9,7 @@ from player import Player
 
 NUMBER_OF_PLAYERS = 100000
 NUMBER_OF_ROUNDS = 1000
-MEAN_REASONING_COST = 0.11
+MEAN_REASONING_COST = 0.5
 
 def plot_results(player_count_by_reasoning_cost):
     reasoning_costs = list(player_count_by_reasoning_cost.keys())

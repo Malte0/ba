@@ -15,17 +15,6 @@ NUMBER_OF_PLAYERS_IN_TOURNAMENT = 10
 EXPTECTED_ROUNDS = N // (K // 2)
 SIGMA_SCALE = 0.5 # gaussian spread for opponent thinking steps
 
-COST_FACTOR = 0.05
-# ALPHA = 0.5 # weight for win rate vs cost in reward calculation
-
-def cost_of_thinking(computation_steps):
-    x = (computation_steps // N) ** 2
-    return x * COST_FACTOR
-
-def reward_for_winning(thinking_steps):
-    # Example reward function: linear reward for winning with fewer thinking steps
-    return max(0, N - thinking_steps)
-
 # craetes players with thinking steps gaussian distributed around a mean that is linearly shifted by the average opponent strength
 def create_opponents(avg_opponent_strength=0.5):
     # Baseline is the "minimum strong" level; strength=1 pushes mean close to N.

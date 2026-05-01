@@ -7,9 +7,10 @@ N = 100
 K = 8
 NUMBER_OF_GAMES = 100
 NUMBER_OF_ITERATIONS = 100
+OTHER_PLAYER_THINKING_STEPS = 0
 NUMBER_OF_PLAYERS = 2
 def player_thinking_steps(player_index):
-    return min(N, 0+player_index*N)
+    return min(N, OTHER_PLAYER_THINKING_STEPS+player_index*N)
 VERBOSE = False
 
 def plot_results(results, games_played, thinking_times: dict[int, list[int]], guaranteed_wins):
