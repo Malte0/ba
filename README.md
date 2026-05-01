@@ -3,7 +3,7 @@
 
 Alle Scripte laufen mit Python 3.11.1 und ausschließlich mit Standard-bibliotheken.
 
-Um die in der Bachelorarbeit gezeigten Grafiken zu erzeugen sind folgende Schritte erforderlich:
+Um die in der Arbeit gezeigten Abbildungen der Simulationen zu erzeugen sind folgende Schritte erforderlich:
 
 ### Abbildung 2.2
 * /two-thirds-game/plot_player_count_per_reasoning_cost.py öffnen
